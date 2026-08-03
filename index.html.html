@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Broke to Bag — Life Planning Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --ink:    #1a1c1e;
+  --ink2:   #2c2f33;
+  --text:   #1a1c1e;
+  --text2:  #5c606a;
+  --text3:  #9da1aa;
+  --bg:     #f8f6f1;
+  --bg2:    #f0ede6;
+  --bg3:    #e8e4db;
+  --white:  #ffffff;
+  --border: rgba(0,0,0,0.07);
+  --bord2:  rgba(0,0,0,0.13);
+  --maple:  #c0392b;
+  --maple2: #e74c3c;
+  --ms:     rgba(192,57,43,0.09);
+  --forest: #2d6a4f;
+  --forest2:#40916c;
+  --fs:     rgba(45,106,79,0.09);
+  --sky:    #1a6b8a;
+  --sky2:   #2196b8;
+  --ss:     rgba(26,107,138,0.09);
+  --gold:   #b07d2a;
+  --gold2:  #d4a017;
+  --gs:     rgba(176,125,42,0.09);
+  --lav:    #6c5b8e;
+  --lavs:   rgba(108,91,142,0.09);
+  --r:      16px;
+  --rsm:    10px;
+  --sh:     0 1px 6px rgba(0,0,0,0.06);
+  --shmd:   0 6px 28px rgba(0,0,0,0.09);
+  --shlg:   0 20px 60px rgba(0,0,0,0.13);
+  --dp:     'Playfair Display', serif;
+  --bd:     'Inter', sans-serif;
+  --mn:     'JetBrains Mono', monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--bd);font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden;}
+
+/* ═══════════════════════════════════════════
+   DREAM BUILDER ONBOARDING
+═══════════════════════════════════════════ */
+#dream-overlay{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;flex-direction:column;align-items:center;overflow-y:auto;padding:0 20px 60px;transition:opacity .5s,transform .5s;}
+#dream-overlay.exit{opacity:0;transform:translateY(-20px);pointer-events:none;}
+.db-logo{display:flex;align-items:center;gap:8px;margin-bottom:32px;}
+.db-logo-text{font-family:var(--dp);font-size:18px;color:var(--ink);}
+.db-logo-text em{color:var(--maple);font-style:italic;}
+.db-hdr{text-align:center;padding:52px 20px 36px;max-width:580px;width:100%;}
+.db-step{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;}
+.db-title{font-family:var(--dp);font-size:40px;font-weight:400;color:var(--ink);line-height:1.15;letter-spacing:-.02em;margin-bottom:10px;}
+.db-title em{color:var(--maple);font-style:italic;}
+.db-sub{font-size:14px;color:var(--text2);line-height:1.65;max-width:420px;margin:0 auto;}
+.db-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;max-width:760px;width:100%;margin:0 auto 32px;}
+.dc{background:var(--white);border:2px solid var(--border);border-radius:18px;padding:22px 16px 18px;cursor:pointer;text-align:center;transition:all .22s cubic-bezier(.4,0,.2,1);opacity:0;transform:translateY(14px);animation:card-in .4s cubic-bezier(.4,0,.2,1) forwards;user-select:none;position:relative;overflow:hidden;}
+.dc::before{content:'';position:absolute;inset:0;background:var(--dc-accent,transparent);opacity:0;transition:opacity .2s;border-radius:16px;}
+.dc:hover{transform:translateY(-3px);box-shadow:var(--shmd);border-color:var(--bord2);}
+.dc:hover::before,.dc.sel::before{opacity:1;}
+.dc.sel{border-color:var(--dc-color,var(--maple));box-shadow:0 0 0 3px var(--dc-glow,var(--ms));transform:translateY(-2px);}
+.dc.sel .dc-ck{opacity:1;transform:scale(1);}
+@keyframes card-in{to{opacity:1;transform:translateY(0)}}
+.dc-em{font-size:32px;margin-bottom:8px;display:block;position:relative;z-index:1;}
+.dc-lbl{font-size:12px;font-weight:500;color:var(--text);line-height:1.3;position:relative;z-index:1;}
+.dc-ck{position:absolute;top:9px;right:9px;width:20px;height:20px;border-radius:50%;background:var(--dc-color,var(--maple));color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.5);transition:all .2s cubic-bezier(.4,0,.2,1);z-index:2;}
+.db-cta{display:flex;flex-direction:column;align-items:center;gap:11px;max-width:380px;width:100%;margin:0 auto;}
+.db-sel-ct{font-size:13px;color:var(--text2);min-height:18px;}
+.db-sel-ct strong{color:var(--maple);}
+.dbbtn{width:100%;padding:15px 32px;background:var(--ink);color:#fff;border:none;border-radius:13px;font-family:var(--bd);font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;opacity:.3;pointer-events:none;}
+.dbbtn.rdy{opacity:1;pointer-events:all;}
+.dbbtn.rdy:hover{background:var(--ink2);box-shadow:0 8px 28px rgba(0,0,0,.2);transform:translateY(-1px);}
+.db-skip{font-size:13px;color:var(--text3);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+.db-skip:hover{color:var(--text2);}
+#step-name{display:none;flex-direction:column;align-items:center;width:100%;max-width:460px;margin:0 auto;padding-top:8px;}
+#step-name.active{display:flex;}
+.name-inp{width:100%;font-family:var(--dp);font-size:30px;font-weight:400;color:var(--ink);background:transparent;border:none;border-bottom:2px solid var(--bord2);padding:11px 4px;outline:none;text-align:center;transition:border-color .2s;margin-bottom:22px;}
+.name-inp:focus{border-color:var(--maple);}
+.name-inp::placeholder{color:var(--text3);}
+
+/* ═══════════════════════════════════════════
+   MAIN APP SHELL
+═══════════════════════════════════════════ */
+#app{display:flex;min-height:100vh;opacity:0;transition:opacity .5s;}
+#app.visible{opacity:1;}
+
+/* SIDEBAR */
+#sidebar{width:254px;min-height:100vh;background:var(--ink);display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;z-index:100;transition:transform .35s cubic-bezier(.4,0,.2,1);}
+.sl{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sl-logo{font-family:var(--dp);font-size:17px;color:#fff;margin-bottom:13px;}
+.sl-logo em{color:#e8b4a0;font-style:italic;}
+.sl-name{font-size:14px;font-weight:600;color:#fff;}
+.sl-tag{font-size:12px;color:rgba(255,255,255,.4);margin-top:1px;}
+.sl-dtags{display:flex;flex-wrap:wrap;gap:4px;margin-top:9px;}
+.sl-dtag{font-size:10px;padding:2px 7px;background:rgba(255,255,255,.08);border-radius:20px;color:rgba(255,255,255,.45);}
+nav{flex:1;padding:14px 10px;overflow-y:auto;}
+.ng{margin-bottom:18px;}
+.ngl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.22);padding:0 12px;margin-bottom:4px;}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:9px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13px;transition:all .15s;margin-bottom:1px;user-select:none;}
+.ni:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);}
+.ni.active{background:rgba(255,255,255,.11);color:#fff;font-weight:500;}
+.ni-ic{font-size:14px;width:19px;text-align:center;}
+.ni-bdg{margin-left:auto;background:var(--maple);color:#fff;font-size:10px;padding:1px 6px;border-radius:9px;font-weight:600;}
+.sf{padding:12px 20px 20px;border-top:1px solid rgba(255,255,255,.07);}
+.priv{display:flex;align-items:center;gap:7px;font-size:11px;color:rgba(255,255,255,.3);}
+.pdot{width:5px;height:5px;border-radius:50%;background:#40916c;box-shadow:0 0 6px #40916c;animation:blink 3s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* MAIN CONTENT */
+#main{margin-left:254px;flex:1;padding:34px 38px;max-width:1050px;}
+.sc{display:none;}
+.sc.active{display:block;animation:sup .36s cubic-bezier(.4,0,.2,1);}
+@keyframes sup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HEADER */
+.ph{margin-bottom:30px;}
+.ph-eye{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;display:flex;align-items:center;gap:7px;}
+.ph-eye::before{content:'';width:14px;height:1px;background:var(--text3);}
+.ph-title{font-family:var(--dp);font-size:33px;font-weight:400;color:var(--text);line-height:1.15;letter-spacing:-.02em;}
+.ph-title em{color:var(--maple);font-style:italic;}
+.ph-sub{font-size:13px;color:var(--text2);margin-top:6px;max-width:480px;line-height:1.6;}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);transition:box-shadow .2s;}
+.card:hover{box-shadow:var(--shmd);}
+.cp{padding:22px;}
+.cplg{padding:30px;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:13px;}
+.ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));gap:15px;}
+
+/* STAT CARDS */
+.scp{padding:19px;}
+.sceye{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:7px;}
+.scval{font-family:var(--dp);font-size:31px;font-weight:400;line-height:1;letter-spacing:-.02em;margin-bottom:4px;}
+.scval.maple{color:var(--maple);}
+.scval.forest{color:var(--forest);}
+.scval.sky{color:var(--sky);}
+.scval.gold{color:var(--gold);}
+.scnote{font-size:12px;color:var(--text2);}
+.scnote.up{color:var(--forest2);}
+
+/* PROGRESS */
+.pbw{margin-top:11px;}
+.pbh{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:5px;}
+.pbt{height:6px;background:var(--bg2);border-radius:6px;overflow:hidden;}
+.pbf{height:100%;border-radius:6px;width:0;transition:width 1.1s cubic-bezier(.4,0,.2,1);}
+.pbf.maple{background:linear-gradient(90deg,var(--maple),var(--maple2));}
+.pbf.forest{background:linear-gradient(90deg,var(--forest),var(--forest2));}
+.pbf.sky{background:linear-gradient(90deg,var(--sky),var(--sky2));}
+.pbf.gold{background:linear-gradient(90deg,var(--gold),var(--gold2));}
+.pbf.lav{background:linear-gradient(90deg,var(--lav),#9b82c8);}
+
+/* SECTION HEADS */
+.sh{font-family:var(--dp);font-size:19px;font-weight:400;color:var(--text);margin-bottom:3px;letter-spacing:-.01em;}
+.ss{font-size:13px;color:var(--text2);margin-bottom:15px;line-height:1.5;}
+
+/* FORMS */
+.fr{display:grid;gap:11px;margin-bottom:13px;}
+.fr.c2{grid-template-columns:1fr 1fr;}
+.fr.c3{grid-template-columns:1fr 1fr 1fr;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500;}
+.inp{background:var(--bg);border:1.5px solid var(--bord2);border-radius:var(--rsm);padding:10px 13px;color:var(--text);font-family:var(--bd);font-size:13px;outline:none;width:100%;transition:border-color .16s,box-shadow .16s;}
+.inp:focus{border-color:var(--maple);box-shadow:0 0 0 3px var(--ms);}
+.inp::placeholder{color:var(--text3);}
+select.inp{cursor:pointer;}
+textarea.inp{resize:vertical;min-height:76px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--rsm);border:none;cursor:pointer;font-family:var(--bd);font-size:13px;font-weight:500;transition:all .16s;white-space:nowrap;}
+.btn-maple{background:var(--maple);color:#fff;}
+.btn-maple:hover{background:#a93226;box-shadow:0 5px 18px rgba(192,57,43,.26);transform:translateY(-1px);}
+.btn-ink{background:var(--ink);color:#fff;}
+.btn-ink:hover{background:var(--ink2);transform:translateY(-1px);}
+.btn-forest{background:var(--forest);color:#fff;}
+.btn-forest:hover{background:#1e4d38;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--bord2);}
+.btn-ghost:hover{background:var(--bg2);color:var(--text);}
+.btn-sky{background:var(--sky);color:#fff;}
+.btn-sky:hover{background:#155a76;transform:translateY(-1px);}
+.btn-gold{background:var(--gold);color:#fff;}
+.btn-gold:hover{background:#8a5e1a;transform:translateY(-1px);}
+
+/* BADGES */
+.bdg{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;}
+.bdg-maple{background:var(--ms);color:var(--maple);}
+.bdg-forest{background:var(--fs);color:var(--forest);}
+.bdg-sky{background:var(--ss);color:var(--sky);}
+.bdg-gold{background:var(--gs);color:var(--gold);}
+.bdg-lav{background:var(--lavs);color:var(--lav);}
+
+/* TIP BOXES */
+.tip{background:var(--fs);border-left:3px solid var(--forest);border-radius:0 var(--rsm) var(--rsm) 0;padding:12px 15px;font-size:13px;line-height:1.6;margin:12px 0;}
+.tip-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);margin-bottom:3px;}
+.alert-box{background:var(--ms);border-left:3px solid var(--maple);border-radius:0 var(--rsm) var(--rsm) 0;padding:12px 15px;font-size:13px;line-height:1.6;margin:12px 0;}
+.info-box{background:var(--ss);border-left:3px solid var(--sky);border-radius:0 var(--rsm) var(--rsm) 0;padding:12px 15px;font-size:13px;line-height:1.6;margin:12px 0;}
+
+/* ═══════════════════════════════════════════
+   LIFE PLANNING ENGINE STYLES
+═══════════════════════════════════════════ */
+
+/* Plan card in grid */
+.plan-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;border-top:3px solid var(--pc-color,var(--maple));}
+.plan-card:hover{box-shadow:var(--shmd);transform:translateY(-2px);}
+.pc-emoji{font-size:30px;margin-bottom:9px;}
+.pc-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.pc-desc{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:13px;}
+.pc-status{font-size:11px;color:var(--text3);}
+
+/* Engine modal overlay */
+#engine-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:400;display:none;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;}
+#engine-overlay.open{display:flex;}
+#engine-modal{background:var(--white);border-radius:22px;width:100%;max-width:720px;box-shadow:var(--shlg);overflow:hidden;margin:auto;}
+
+/* Engine header */
+.em-header{padding:26px 28px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.em-title-wrap{}
+.em-emoji{font-size:28px;margin-bottom:6px;}
+.em-title{font-family:var(--dp);font-size:24px;font-weight:400;color:var(--text);letter-spacing:-.01em;}
+.em-sub{font-size:13px;color:var(--text2);margin-top:3px;}
+.em-close{background:var(--bg2);border:none;cursor:pointer;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text2);flex-shrink:0;transition:background .15s;}
+.em-close:hover{background:var(--bg3);}
+
+/* Engine progress track */
+.em-progress{padding:16px 28px;border-bottom:1px solid var(--border);background:var(--bg);}
+.em-steps{display:flex;gap:0;position:relative;}
+.em-steps::before{content:'';position:absolute;top:11px;left:0;right:0;height:2px;background:var(--bg3);z-index:0;}
+.em-step-item{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;z-index:1;}
+.em-step-dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--bg3);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text3);transition:all .3s;margin-bottom:5px;}
+.em-step-dot.done{background:var(--forest);border-color:var(--forest);color:#fff;}
+.em-step-dot.current{background:var(--maple);border-color:var(--maple);color:#fff;}
+.em-step-lbl{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);text-align:center;line-height:1.3;}
+.em-step-lbl.current{color:var(--maple);font-weight:600;}
+.em-step-lbl.done{color:var(--forest);}
+
+/* Engine body */
+.em-body{padding:26px 28px;min-height:320px;}
+
+/* Step: Questions */
+.eq-field{margin-bottom:16px;}
+.eq-field label{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);font-weight:500;margin-bottom:5px;}
+.eq-field .inp{width:100%;}
+.eq-hint{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.4;}
+.eq-grid{display:grid;gap:11px;}
+.eq-grid.c2{grid-template-columns:1fr 1fr;}
+.eq-grid.c3{grid-template-columns:1fr 1fr 1fr;}
+
+/* Step: AI Analysis */
+.ai-analysis-card{background:var(--ink);border-radius:var(--r);padding:22px;color:#fff;margin-bottom:14px;}
+.ai-analysis-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:9px;}
+.ai-analysis-text{font-family:var(--dp);font-size:17px;font-style:italic;line-height:1.55;color:#fff;}
+.ai-analysis-loading{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.5);font-size:13px;}
+.ald{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);animation:bounce 1.2s ease-in-out infinite;}
+.ald:nth-child(2){animation-delay:.2s;}
+.ald:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* Step: Budget */
+.budget-table{width:100%;border-collapse:collapse;}
+.budget-table tr{border-bottom:1px solid var(--border);}
+.budget-table tr:last-child{border-bottom:none;}
+.budget-table td{padding:10px 6px;font-size:13px;}
+.budget-table td:first-child{color:var(--text2);}
+.budget-table td:last-child{text-align:right;font-family:var(--mn);color:var(--text);font-weight:500;}
+.budget-table tr.total td{font-weight:600;color:var(--text);padding-top:14px;border-top:2px solid var(--bord2);}
+.budget-total-num{font-family:var(--dp);font-size:32px;font-weight:400;color:var(--maple);text-align:center;padding:16px 0;}
+
+/* Step: Timeline */
+.timeline-wrap{position:relative;padding-left:24px;}
+.timeline-wrap::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--bg3);}
+.tl-item{position:relative;margin-bottom:18px;padding-left:20px;}
+.tl-dot{position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:50%;border:2px solid var(--maple);background:var(--white);}
+.tl-dot.done{background:var(--forest);border-color:var(--forest);}
+.tl-month{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px;}
+.tl-label{font-size:13px;font-weight:500;color:var(--text);}
+.tl-amount{font-size:12px;color:var(--maple);font-family:var(--mn);}
+
+/* Step: Checklist */
+.cl-item{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);}
+.cl-item:last-child{border-bottom:none;}
+.cl-box{width:20px;height:20px;border-radius:5px;border:2px solid var(--bord2);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent;transition:all .15s;margin-top:2px;}
+.cl-box.chk{background:var(--forest);border-color:var(--forest);color:#fff;}
+.cl-body{}
+.cl-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.cl-title.chk{text-decoration:line-through;color:var(--text3);}
+.cl-detail{font-size:12px;color:var(--text2);line-height:1.5;}
+.cl-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:500;}
+
+/* Step: Resources */
+.res-item{display:flex;align-items:flex-start;gap:11px;padding:13px 0;border-bottom:1px solid var(--border);}
+.res-item:last-child{border-bottom:none;}
+.res-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.res-body h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.res-body p{font-size:12px;color:var(--text2);line-height:1.5;}
+.res-link{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--sky);text-decoration:none;margin-top:3px;font-weight:500;}
+
+/* Step: Progress */
+.prog-hero{text-align:center;padding:20px 0 24px;}
+.prog-pct-big{font-family:var(--dp);font-size:64px;font-weight:400;color:var(--text);line-height:1;}
+.prog-pct-lbl{font-size:12px;color:var(--text2);margin-top:4px;}
+.prog-ring-wrap{display:inline-flex;position:relative;margin-bottom:12px;}
+
+/* Engine footer */
+.em-footer{padding:16px 28px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--bg);}
+.em-footer-note{font-size:12px;color:var(--text3);}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD SPECIFIC
+═══════════════════════════════════════════ */
+.dg-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:19px;cursor:pointer;transition:all .2s;border-top:3px solid var(--dgc,var(--maple));}
+.dg-card:hover{box-shadow:var(--shmd);transform:translateY(-2px);}
+.dg-em{font-size:26px;margin-bottom:8px;}
+.dg-nm{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.dg-st{font-size:11px;color:var(--text3);margin-bottom:11px;}
+
+/* CHAT */
+.chat-wrap{display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;padding:2px;margin-bottom:12px;}
+.cmsg{display:flex;gap:9px;animation:sup .28s ease;}
+.cmsg.user{flex-direction:row-reverse;}
+.cav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.cav.ai{background:var(--ink);color:#fff;font-size:12px;}
+.cav.usr{background:var(--ms);color:var(--maple);}
+.cbub{max-width:78%;padding:9px 13px;border-radius:13px;font-size:13px;line-height:1.6;}
+.cmsg.ai .cbub{background:var(--white);border:1px solid var(--border);border-radius:4px 13px 13px 13px;color:var(--text);box-shadow:var(--sh);}
+.cmsg.user .cbub{background:var(--ink);color:#fff;border-radius:13px 4px 13px 13px;}
+.chat-ir{display:flex;gap:8px;}
+.chat-ir .inp{flex:1;}
+.typing-wrap{display:none;margin-bottom:10px;}
+.typing-wrap.show{display:flex;}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:bounce 1.2s ease-in-out infinite;margin:0 2px;}
+.tdot:nth-child(2){animation-delay:.2s;}
+.tdot:nth-child(3){animation-delay:.4s;}
+
+/* ACTION PLAN */
+.ap-step{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);}
+.ap-step:last-child{border-bottom:none;}
+.ap-num{width:27px;height:27px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px;}
+.ap-num.done{background:var(--forest);}
+.ap-body h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.ap-body p{font-size:12px;color:var(--text2);line-height:1.5;}
+.ap-ck{margin-left:auto;width:20px;height:20px;border-radius:5px;border:2px solid var(--bord2);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;align-self:flex-start;margin-top:3px;background:none;font-size:11px;color:transparent;}
+.ap-ck.done{background:var(--forest);border-color:var(--forest);color:#fff;}
+
+/* GAMIFICATION */
+.ach-pop{position:fixed;top:22px;right:22px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--shlg);z-index:900;display:flex;align-items:center;gap:12px;max-width:300px;transform:translateX(380px);transition:transform .4s cubic-bezier(.4,0,.2,1);}
+.ach-pop.show{transform:translateX(0);}
+.ach-icon{font-size:28px;flex-shrink:0;}
+.ach-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px;}
+.ach-sub{font-size:11px;color:var(--text2);}
+.streak-card{background:linear-gradient(135deg,var(--ink) 0%,#2c3540 100%);border-radius:var(--r);padding:18px;color:#fff;}
+.streak-num{font-family:var(--dp);font-size:44px;color:#fff;line-height:1;}
+
+/* WEEKLY CHECK-IN */
+.ciq{background:var(--white);border:1px solid var(--border);border-left:3px solid var(--maple);border-radius:0 var(--r) var(--r) 0;padding:18px 20px;margin-bottom:12px;}
+.ciq-title{font-family:var(--dp);font-size:16px;font-style:italic;color:var(--text);margin-bottom:10px;}
+.mood-row{display:flex;gap:7px;flex-wrap:wrap;}
+.mood-btn{padding:6px 12px;border-radius:20px;border:1.5px solid var(--bord2);cursor:pointer;font-size:12px;color:var(--text2);background:var(--white);transition:all .15s;}
+.mood-btn:hover,.mood-btn.sel{border-color:var(--maple);color:var(--maple);background:var(--ms);}
+
+/* RESOURCE ITEMS (Canadian Resources page) */
+.ri{display:flex;align-items:flex-start;gap:11px;padding:12px 0;border-bottom:1px solid var(--border);}
+.ri:last-child{border-bottom:none;}
+.ri-ic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ri-b h4{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.ri-b p{font-size:12px;color:var(--text2);line-height:1.5;}
+.ri-lnk{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--sky);text-decoration:none;margin-top:2px;font-weight:500;}
+
+/* MISC */
+.divider{height:1px;background:var(--border);margin:20px 0;}
+.sp{height:16px;}
+.spsm{height:9px;}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(11px);background:var(--ink);color:#fff;padding:9px 20px;border-radius:30px;font-size:13px;opacity:0;transition:all .26s;z-index:999;pointer-events:none;white-space:nowrap;box-shadow:var(--shmd);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#mnubtn{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--ink);border:none;border-radius:10px;width:38px;height:38px;cursor:pointer;align-items:center;justify-content:center;font-size:16px;color:#fff;box-shadow:var(--shmd);}
+#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.44);z-index:99;}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #main{margin-left:0;padding:16px 14px;padding-top:60px;}
+  #mnubtn{display:flex;}
+  #ov.show{display:block;}
+  .g2,.g3,.g4{grid-template-columns:1fr;}
+  .fr.c2,.fr.c3,.eq-grid.c2,.eq-grid.c3{grid-template-columns:1fr;}
+  .ph-title{font-size:26px;}
+  .db-title{font-size:28px;}
+  .db-grid{grid-template-columns:repeat(auto-fill,minmax(138px,1fr));}
+  .em-steps .em-step-lbl{display:none;}
+  #engine-modal{border-radius:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     DREAM BUILDER ONBOARDING
+══════════════════════════════════════ -->
+<div id="dream-overlay">
+  <div class="db-hdr" id="db-hdr1">
+    <div class="db-logo"><span>🍁</span><span class="db-logo-text">Broke <em>to Bag</em></span></div>
+    <div class="db-step">Step 1 of 2 — Your Dreams</div>
+    <div class="db-title">What are you hoping<br>to <em>accomplish?</em></div>
+    <div class="db-sub">Choose one or more. We'll build a personalised life plan around what matters most to you.</div>
+  </div>
+  <div class="db-grid" id="db-grid"></div>
+  <div class="db-cta" id="db-cta1">
+    <div class="db-sel-ct" id="db-sel-ct">Select at least one dream to continue</div>
+    <button class="dbbtn" id="db-next-btn" onclick="goNameStep()">Build My Plan →</button>
+    <span class="db-skip" onclick="skipOnboard()">Skip — take me straight to the app</span>
+  </div>
+  <div id="step-name">
+    <div class="db-hdr" style="padding-top:0">
+      <div class="db-step">Step 2 of 2 — Your Name</div>
+      <div class="db-title">What should we <em>call you?</em></div>
+      <div class="db-sub">We'll personalise everything just for you.</div>
+    </div>
+    <input class="name-inp" id="name-inp" placeholder="Your first name" maxlength="28" oninput="onNameType()" onkeydown="if(event.key==='Enter')finishOnboard()"/>
+    <div class="db-cta">
+      <button class="dbbtn" id="name-btn" onclick="finishOnboard()">Start My Journey →</button>
+      <span class="db-skip" onclick="skipOnboard()">Skip</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ACHIEVEMENT POP
+══════════════════════════════════════ -->
+<div class="ach-pop" id="ach-pop">
+  <div class="ach-icon" id="ach-icon">🎉</div>
+  <div><div class="ach-title" id="ach-title">Achievement</div><div class="ach-sub" id="ach-sub">You're on your way!</div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LIFE PLANNING ENGINE MODAL
+══════════════════════════════════════ -->
+<div id="engine-overlay">
+  <div id="engine-modal">
+    <div class="em-header">
+      <div class="em-title-wrap">
+        <div class="em-emoji" id="em-emoji">✈️</div>
+        <div class="em-title" id="em-title">Planner</div>
+        <div class="em-sub" id="em-sub">Your personalised plan</div>
+      </div>
+      <button class="em-close" onclick="closeEngine()">×</button>
+    </div>
+    <div class="em-progress">
+      <div class="em-steps" id="em-steps"></div>
+    </div>
+    <div class="em-body" id="em-body"></div>
+    <div class="em-footer">
+      <div class="em-footer-note" id="em-footer-note"></div>
+      <div class="row">
+        <button class="btn btn-ghost" id="em-back-btn" onclick="engineBack()">← Back</button>
+        <button class="btn btn-maple" id="em-next-btn" onclick="engineNext()">Continue →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="mnubtn" onclick="toggleMenu()">☰</button>
+<div id="ov" onclick="toggleMenu()"></div>
+
+<!-- ══════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════ -->
+<div id="app">
+<aside id="sidebar">
+  <div class="sl">
+    <div class="sl-logo">Broke <em>to Bag</em> 🍁</div>
+    <div class="sl-name" id="sl-name">Your Plan</div>
+    <div class="sl-tag" id="sl-tag">Life Planning Platform</div>
+    <div class="sl-dtags" id="sl-dtags"></div>
+  </div>
+  <nav>
+    <div class="ng">
+      <div class="ngl">Your Journey</div>
+      <div class="ni active" onclick="go('dashboard',this)"><span class="ni-ic">◎</span>Dashboard</div>
+      <div class="ni" onclick="go('planners',this)"><span class="ni-ic">✦</span>Life Planners</div>
+      <div class="ni" onclick="go('coach',this)"><span class="ni-ic">💬</span>AI Coach</div>
+      <div class="ni" onclick="go('checkin',this)"><span class="ni-ic">↺</span>Weekly Check-in <span class="ni-bdg" id="ci-badge" style="display:none">!</span></div>
+    </div>
+    <div class="ng">
+      <div class="ngl">Planning</div>
+      <div class="ni" onclick="go('budget',this)"><span class="ni-ic">◈</span>Family Budget</div>
+      <div class="ni" onclick="go('goals',this)"><span class="ni-ic">◇</span>Savings Goals</div>
+      <div class="ni" onclick="go('debt',this)"><span class="ni-ic">↓</span>Debt Payoff</div>
+      <div class="ni" onclick="go('emergency',this)"><span class="ni-ic">🛡</span>Emergency Fund</div>
+    </div>
+    <div class="ng">
+      <div class="ngl">Resources</div>
+      <div class="ni" onclick="go('action',this)"><span class="ni-ic">▷</span>Action Plan</div>
+      <div class="ni" onclick="go('canada',this)"><span class="ni-ic">🍁</span>Canadian Resources</div>
+    </div>
+  </nav>
+  <div class="sf"><div class="priv"><div class="pdot"></div>Data stays on this device</div></div>
+</aside>
+
+<main id="main">
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="sc active">
+    <div class="ph">
+      <div class="ph-eye">Home</div>
+      <div class="ph-title" id="dash-greet">Good morning</div>
+      <div class="ph-sub">Here's where your life plan stands today.</div>
+    </div>
+    <div class="g4" style="margin-bottom:15px">
+      <div class="card scp"><div class="sceye">Monthly Income</div><div class="scval forest" id="d-inc">$0</div><div class="scnote">household total</div></div>
+      <div class="card scp"><div class="sceye">Monthly Expenses</div><div class="scval maple" id="d-exp">$0</div><div class="scnote" id="d-expp">— of income</div></div>
+      <div class="card scp"><div class="sceye">Monthly Savings</div><div class="scval sky" id="d-sav">$0</div><div class="scnote up" id="d-savp">savings rate</div></div>
+      <div class="card scp"><div class="sceye">Emergency Fund</div><div class="scval gold" id="d-emg">$0</div><div class="scnote" id="d-emgp">months covered</div></div>
+    </div>
+    <div class="g2" style="margin-bottom:15px">
+      <div class="card cp">
+        <div class="sh">Financial Health Score</div>
+        <div class="ss">How your family is doing across all areas.</div>
+        <div style="display:flex;align-items:center;gap:18px">
+          <div style="position:relative;width:86px;height:86px;flex-shrink:0">
+            <svg width="86" height="86" viewBox="0 0 86 86">
+              <circle cx="43" cy="43" r="36" fill="none" stroke="var(--bg2)" stroke-width="8"/>
+              <circle cx="43" cy="43" r="36" fill="none" stroke="var(--forest)" stroke-width="8" stroke-dasharray="226" id="h-ring" stroke-dashoffset="226" stroke-linecap="round" transform="rotate(-90 43 43)" style="transition:stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1)"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <span style="font-family:var(--dp);font-size:19px;color:var(--text)" id="h-num">—</span>
+              <span style="font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">/100</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px" id="h-lbl">Complete your budget first</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.5" id="h-desc">Go to Family Budget to unlock your score.</div>
+            <div style="margin-top:9px" id="h-act"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card cp" style="background:var(--ink);border-color:var(--ink)">
+        <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:8px">AI Insight</div>
+        <div style="font-family:var(--dp);font-size:17px;font-style:italic;color:#fff;line-height:1.45;margin-bottom:12px" id="ai-insight">Add your budget to unlock personalised insights.</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.35)" id="ai-insight-sub">Updated based on your activity</div>
+        <div style="margin-top:14px"><button class="btn" style="background:rgba(255,255,255,.11);color:#fff;font-size:12px;padding:7px 14px" onclick="go('coach',document.querySelector('[onclick*=coach]'))">Ask AI Coach →</button></div>
+      </div>
+    </div>
+    <div class="sh" style="margin-bottom:10px">Active Dreams & Plans</div>
+    <div class="ga" id="dash-dreams" style="margin-bottom:18px"></div>
+    <div class="card cp" style="margin-bottom:14px">
+      <div class="sh">Quick Add</div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:flex-end;margin-top:9px">
+        <div class="fg" style="flex:2;min-width:150px"><label>Description</label><input class="inp" id="q-desc" placeholder="e.g. Grocery run"/></div>
+        <div class="fg" style="flex:1;min-width:95px"><label>Amount ($)</label><input class="inp" type="number" id="q-amt" placeholder="0.00"/></div>
+        <div class="fg" style="flex:1;min-width:125px"><label>Type</label>
+          <select class="inp" id="q-type">
+            <option value="income">💰 Income</option><option value="housing">🏠 Housing</option>
+            <option value="groceries">🛒 Groceries</option><option value="transport">🚗 Transport</option>
+            <option value="childcare">👶 Childcare</option><option value="utilities">💡 Utilities</option>
+            <option value="debt">💳 Debt</option><option value="savings">📊 Savings</option><option value="other">◎ Other</option>
+          </select>
+        </div>
+        <button class="btn btn-maple" onclick="quickAdd()" style="height:38px">+ Add</button>
+      </div>
+    </div>
+    <div class="card cp"><div class="sh">Recent Entries</div><div id="recent-list" style="margin-top:9px"></div></div>
+  </section>
+
+  <!-- LIFE PLANNERS -->
+  <section id="planners" class="sc">
+    <div class="ph">
+      <div class="ph-eye">Life Planning Engine</div>
+      <div class="ph-title">Your <em>life planners</em></div>
+      <div class="ph-sub">Each planner builds a personalised roadmap with budget, timeline, checklist, and AI guidance — all in one place.</div>
+    </div>
+    <div class="ga" id="planners-grid"></div>
+    <div class="sp"></div>
+    <div class="tip"><div class="tip-lbl">How it works</div>Each planner walks you through a set of questions, then builds a personalised plan: budget estimate, savings timeline, action checklist, trusted resources, and AI recommendations — all saved to your device.</div>
+  </section>
+
+  <!-- AI COACH -->
+  <section id="coach" class="sc">
+    <div class="ph">
+      <div class="ph-eye">AI Coach</div>
+      <div class="ph-title">Your personal <em>finance mentor</em></div>
+      <div class="ph-sub">Ask anything. I know your goals, your Canadian context, and your current plan.</div>
+    </div>
+    <div class="card cp" style="margin-bottom:15px">
+      <div class="sh">Ask me anything</div>
+      <div class="ss">Powered by Claude AI with Canadian-specific knowledge. Offline tips available as backup.</div>
+      <div class="chat-wrap" id="chat-wrap">
+        <div class="cmsg ai"><div class="cav ai">🍁</div><div class="cbub" id="coach-intro">Hi! I'm your Canadian family finance coach. I know your goals and can help with RRSPs, TFSAs, RESPs, CCB, Alberta programs, debt payoff, budgeting, and life planning. What's on your mind?</div></div>
+      </div>
+      <div class="cmsg ai typing-wrap" id="typing"><div class="cav ai">🍁</div><div class="cbub" style="padding:11px 13px;display:flex;gap:0"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>
+      <div class="chat-ir"><input class="inp" id="chat-inp" placeholder="Ask about your goals, Canadian programs, debt, savings..." onkeydown="if(event.key==='Enter')sendChat()"/><button class="btn btn-maple" onclick="sendChat()">Send</button></div>
+    </div>
+    <div class="sh" style="margin-bottom:10px">Quick Questions</div>
+    <div class="ga" id="quick-qs"></div>
+  </section>
+
+  <!-- WEEKLY CHECK-IN -->
+  <section id="checkin" class="sc">
+    <div class="ph"><div class="ph-eye">Weekly Check-in</div><div class="ph-title">How are you <em>doing?</em></div><div class="ph-sub">A 2-minute check-in helps keep your plan accurate and your goals on track.</div></div>
+    <div id="ci-form">
+      <div class="ciq"><div class="ciq-title">"How are you feeling about your finances this week?"</div><div class="mood-row"><button class="mood-btn" onclick="selMood(this,'😌 Peaceful')">😌 Peaceful</button><button class="mood-btn" onclick="selMood(this,'😊 Optimistic')">😊 Optimistic</button><button class="mood-btn" onclick="selMood(this,'😐 Neutral')">😐 Neutral</button><button class="mood-btn" onclick="selMood(this,'😟 Stressed')">😟 Stressed</button><button class="mood-btn" onclick="selMood(this,'😰 Overwhelmed')">😰 Overwhelmed</button></div></div>
+      <div class="ciq"><div class="ciq-title">"Any unexpected expenses this week?"</div><textarea class="inp" id="ci-unexp" placeholder="Write freely — no judgment here..."></textarea></div>
+      <div class="ciq"><div class="ciq-title">"What's one financial win from this week?"</div><textarea class="inp" id="ci-win" placeholder="Even the smallest wins count..."></textarea></div>
+      <div class="ciq"><div class="ciq-title">"Are your goals still the same, or has anything changed?"</div><textarea class="inp" id="ci-goals" placeholder="Life changes, and your plan should too..."></textarea></div>
+      <div style="text-align:center;margin-top:6px"><button class="btn btn-ink" style="padding:12px 32px;font-size:14px" onclick="completeCheckin()">Complete Check-in ✓</button></div>
+    </div>
+    <div id="ci-done" style="display:none">
+      <div class="card cplg" style="text-align:center;max-width:460px;margin:0 auto">
+        <div style="font-size:44px;margin-bottom:14px">✨</div>
+        <div style="font-family:var(--dp);font-size:24px;font-weight:400;margin-bottom:9px">Check-in complete</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:18px">Your plan has been updated. Every check-in is an act of care for your future self.</div>
+        <div class="bdg bdg-forest">Week streak: <span id="streak-num">1</span> 🔥</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUDGET -->
+  <section id="budget" class="sc">
+    <div class="ph"><div class="ph-eye">Family Budget</div><div class="ph-title">Your <em>family budget</em></div><div class="ph-sub">Enter your real numbers. We'll show what they mean and what to do next.</div></div>
+    <div class="g2" style="margin-bottom:15px">
+      <div class="card cp">
+        <div class="sh">Monthly Income</div><div class="ss">Take-home pay after tax.</div>
+        <div class="fr c2">
+          <div class="fg"><label>Person 1 ($)</label><input class="inp" type="number" id="b-p1" placeholder="4500" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Person 2 ($)</label><input class="inp" type="number" id="b-p2" placeholder="0" oninput="calcBudget()"/></div>
+          <div class="fg"><label>CCB / Benefits ($)</label><input class="inp" type="number" id="b-ccb" placeholder="583" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Other ($)</label><input class="inp" type="number" id="b-oth" placeholder="0" oninput="calcBudget()"/></div>
+        </div>
+        <div class="info-box"><strong>Canada Child Benefit:</strong> Up to $648/month per child under 6. Check your amount at CRA My Account.</div>
+      </div>
+      <div class="card cp">
+        <div class="sh">Monthly Expenses</div><div class="ss">No judgment — just real numbers.</div>
+        <div class="fr c2">
+          <div class="fg"><label>Housing ($)</label><input class="inp" type="number" id="b-h" placeholder="1800" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Groceries ($)</label><input class="inp" type="number" id="b-g" placeholder="800" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Transport ($)</label><input class="inp" type="number" id="b-t" placeholder="400" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Childcare ($)</label><input class="inp" type="number" id="b-c" placeholder="300" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Utilities ($)</label><input class="inp" type="number" id="b-u" placeholder="200" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Insurance ($)</label><input class="inp" type="number" id="b-i" placeholder="250" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Debt Payments ($)</label><input class="inp" type="number" id="b-d" placeholder="300" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Subscriptions ($)</label><input class="inp" type="number" id="b-s" placeholder="80" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Dining & Fun ($)</label><input class="inp" type="number" id="b-f" placeholder="200" oninput="calcBudget()"/></div>
+          <div class="fg"><label>Other ($)</label><input class="inp" type="number" id="b-m" placeholder="100" oninput="calcBudget()"/></div>
+        </div>
+      </div>
+    </div>
+    <div class="card cp"><div class="sh">Budget Summary</div><div id="budget-out"><div style="color:var(--text3);font-size:13px">Fill in income and expenses above.</div></div></div>
+  </section>
+
+  <!-- GOALS -->
+  <section id="goals" class="sc">
+    <div class="ph"><div class="ph-eye">Savings Goals</div><div class="ph-title">Goals worth <em>working toward</em></div><div class="ph-sub">Track every savings goal here. Created by planners or manually.</div></div>
+    <div class="card cp" style="margin-bottom:15px">
+      <div class="sh">New Goal</div>
+      <div class="fr c3"><div class="fg"><label>Name</label><input class="inp" id="g-n" placeholder="e.g. Family Vacation"/></div><div class="fg"><label>Target ($)</label><input class="inp" type="number" id="g-t" placeholder="5000"/></div><div class="fg"><label>Saved ($)</label><input class="inp" type="number" id="g-s" placeholder="0"/></div></div>
+      <div class="fr c2"><div class="fg"><label>Category</label><select class="inp" id="g-c"><option>🛡️ Emergency Fund</option><option>🎓 Education / RESP</option><option>✈️ Vacation</option><option>🏠 Home Purchase</option><option>🚗 Vehicle</option><option>🌿 Retirement</option><option>📊 TFSA / Investment</option><option>◎ Other</option></select></div><div class="fg"><label>Target Date</label><input class="inp" type="month" id="g-d"/></div></div>
+      <div class="fg" style="margin-bottom:13px"><label>Why this matters (optional)</label><input class="inp" id="g-w" placeholder="Keep yourself motivated..."/></div>
+      <button class="btn btn-maple" onclick="addGoal()">+ Create Goal</button>
+    </div>
+    <div class="ga" id="goals-list"></div>
+  </section>
+
+  <!-- DEBT -->
+  <section id="debt" class="sc">
+    <div class="ph"><div class="ph-eye">Debt Payoff</div><div class="ph-title">Your path to <em>debt freedom</em></div><div class="ph-sub">List every debt, choose your strategy, see your payoff date.</div></div>
+    <div class="card cp" style="margin-bottom:15px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:15px">
+        <div><div class="sh" style="margin-bottom:0">Strategy</div><div style="font-size:12px;color:var(--text2)">How you want to tackle debt</div></div>
+        <div class="row"><button class="btn btn-maple" id="btn-av" onclick="setDM('avalanche')">Avalanche — Highest Rate</button><button class="btn btn-ghost" id="btn-sw" onclick="setDM('snowball')">Snowball — Smallest Balance</button></div>
+      </div>
+      <div class="fr c2"><div class="fg"><label>Debt Name</label><input class="inp" id="d-n" placeholder="e.g. TD Visa"/></div><div class="fg"><label>Balance ($)</label><input class="inp" type="number" id="d-b" placeholder="5000"/></div><div class="fg"><label>Interest Rate (%)</label><input class="inp" type="number" id="d-r" placeholder="19.99"/></div><div class="fg"><label>Monthly Payment ($)</label><input class="inp" type="number" id="d-p" placeholder="150"/></div></div>
+      <button class="btn btn-maple" onclick="addDebt()">+ Add Debt</button>
+    </div>
+    <div class="ga" id="debt-list"></div>
+    <div class="card cp" style="margin-top:15px"><div class="sh">Summary</div><div id="debt-sum"><div style="color:var(--text3);font-size:13px">Add debts above to see your payoff projection.</div></div></div>
+    <div class="tip" style="margin-top:13px"><div class="tip-lbl">🇨🇦 Canadian Tip</div>Average Canadian credit card APR is 19.99%–22.99%. Free help at <strong>nomoredebts.org</strong>.</div>
+  </section>
+
+  <!-- EMERGENCY -->
+  <section id="emergency" class="sc">
+    <div class="ph"><div class="ph-eye">Emergency Fund</div><div class="ph-title">Your family's <em>safety net</em></div><div class="ph-sub">3–6 months of expenses. Alberta families: aim for 6 months.</div></div>
+    <div class="g2" style="margin-bottom:15px">
+      <div class="card cp">
+        <div class="sh">Track Your Fund</div>
+        <div class="fr"><div class="fg"><label>Current Amount ($)</label><input class="inp" type="number" id="e-c" placeholder="0" oninput="calcEmg()"/></div><div class="fg"><label>Monthly Expenses ($)</label><input class="inp" type="number" id="e-m" placeholder="4000" oninput="calcEmg()"/></div><div class="fg"><label>Target Coverage</label><select class="inp" id="e-t" oninput="calcEmg()"><option value="3">3 months — minimum</option><option value="6" selected>6 months — recommended</option><option value="9">9 months — extra security</option><option value="12">12 months — self-employed</option></select></div></div>
+        <div id="emg-out"></div>
+      </div>
+      <div class="card cp" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:13px">
+        <div class="sh">Coverage Level</div>
+        <div style="position:relative;width:60px;height:130px"><div style="width:60px;height:130px;background:var(--bg2);border-radius:30px;overflow:hidden;position:relative"><div id="e-bar" style="position:absolute;bottom:0;left:0;right:0;border-radius:30px;background:linear-gradient(to top,var(--forest),var(--forest2));height:0%;transition:height 1.1s cubic-bezier(.4,0,.2,1)"></div></div></div>
+        <div><div style="font-family:var(--dp);font-size:30px;color:var(--text)" id="e-mv">0</div><div style="font-size:12px;color:var(--text2)">months covered</div></div>
+      </div>
+    </div>
+    <div class="card cp"><div class="sh">Where to keep it in Canada</div>
+      <div class="ri"><div class="ri-ic" style="background:var(--fs)">📊</div><div class="ri-b"><h4>TFSA HISA (Best Option)</h4><p>Tax-free growth, withdraw anytime. EQ Bank, Simplii, Tangerine: 3.5–5% rates.</p></div></div>
+      <div class="ri"><div class="ri-ic" style="background:var(--ss)">🏦</div><div class="ri-b"><h4>Regular HISA (if TFSA maxed)</h4><p>Taxable but competitive rates. EQ Bank and Oaken Financial.</p></div></div>
+      <div class="ri"><div class="ri-ic" style="background:var(--gs)">💰</div><div class="ri-b"><h4>Cashable GIC</h4><p>Slightly higher rate, cashable after 30 days.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ACTION PLAN -->
+  <section id="action" class="sc">
+    <div class="ph"><div class="ph-eye">Action Plan</div><div class="ph-title">Your next <em>7 steps</em></div><div class="ph-sub">A personalised action plan for Canadian families. Check things off as you go.</div></div>
+    <div class="g2" style="margin-bottom:15px">
+      <div class="card cp" style="grid-column:1/-1">
+        <div id="ap-wrap"></div>
+        <div class="sp"></div>
+        <div style="display:flex;align-items:center;gap:11px"><div class="pbt" style="flex:1;height:7px"><div class="pbf maple" id="ap-bar" style="width:0%"></div></div><span style="font-size:13px;color:var(--text2);white-space:nowrap" id="ap-cnt">0 / 7 done</span></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="streak-card"><div class="streak-num" id="streak-big">0</div><div class="streak-lbl" style="font-size:11px;color:rgba(255,255,255,.45);margin-top:3px">Week streak 🔥</div><div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:7px">Complete weekly check-ins to grow your streak</div></div>
+      <div class="card cp"><div class="sh">Achievements</div><div id="ach-list" style="margin-top:7px"></div></div>
+    </div>
+  </section>
+
+  <!-- CANADA -->
+  <section id="canada" class="sc">
+    <div class="ph"><div class="ph-eye">Canadian Resources</div><div class="ph-title">Made for <em>Canadian families</em></div><div class="ph-sub">Programs, accounts, and tools specific to Canada and Alberta.</div></div>
+    <div class="g2">
+      <div class="card cp"><div class="sh">🇨🇦 Federal Programs</div><div class="ss">Available to eligible Canadian families.</div>
+        <div class="ri"><div class="ri-ic" style="background:var(--ms)">👶</div><div class="ri-b"><h4>Canada Child Benefit (CCB)</h4><p>Up to $7,787/year per child under 6. Tax-free. Apply through CRA My Account.</p><a class="ri-lnk" href="https://www.canada.ca/en/revenue-agency/services/child-family-benefits/canada-child-benefit-overview.html" target="_blank">CRA.ca →</a></div></div>
+        <div class="ri"><div class="ri-ic" style="background:var(--fs)">🎓</div><div class="ri-b"><h4>RESP + CESG Grant</h4><p>Government adds 20% on first $2,500/year per child — $500 free annually. Lifetime max $7,200.</p><a class="ri-lnk" href="https://www.canada.ca/en/employment-social-development/services/student-financial-aid/education-savings/resp.html" target="_blank">Learn more →</a></div></div>
+        <div class="ri"><div class="ri-ic" style="background:var(--ss)">📊</div><div class="ri-b"><h4>TFSA (2025: $7,000/year)</h4><p>Tax-free growth. Withdrawals don't affect benefits. Unused room carries forward.</p><a class="ri-lnk" href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account.html" target="_blank">CRA Guide →</a></div></div>
+        <div class="ri"><div class="ri-ic" style="background:var(--gs)">🏠</div><div class="ri-b"><h4>First Home Savings Account (FHSA)</h4><p>$8,000/year tax-deductible, $40,000 lifetime. Tax-free for first home.</p><a class="ri-lnk" href="https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/first-home-savings-account.html" target="_blank">Learn more →</a></div></div>
+      </div>
+      <div class="card cp"><div class="sh">🌲 Alberta Programs</div><div class="ss">For Alberta residents.</div>
+        <div class="ri"><div class="ri-ic" style="background:var(--ms)">🍁</div><div class="ri-b"><h4>Alberta Child & Family Benefit (ACFB)</h4><p>Up to $2,011/year for 2 children. Automatic when you file taxes.</p><a class="ri-lnk" href="https://www.alberta.ca/alberta-child-and-family-benefit" target="_blank">Alberta.ca →</a></div></div>
+        <div class="ri"><div class="ri-ic" style="background:var(--fs)">⚡</div><div class="ri-b"><h4>Alberta Affordability Payments</h4><p>Up to $600/adult, $180/child for eligible lower-income Albertans.</p><a class="ri-lnk" href="https://www.alberta.ca/affordability-action-plan" target="_blank">Alberta.ca →</a></div></div>
+        <div class="ri"><div class="ri-ic" style="background:var(--ss)">🏥</div><div class="ri-b"><h4>AHCIP — Alberta Health</h4><p>Covers most medically required services. No premium. Ensure family is registered.</p><a class="ri-lnk" href="https://www.alberta.ca/ahcip" target="_blank">Register →</a></div></div>
+        <div class="ri"><div class="ri-ic" style="background:var(--lavs)">🤝</div><div class="ri-b"><h4>Credit Counselling Society (Free)</h4><p>Free non-profit debt and budget counselling across Alberta.</p><a class="ri-lnk" href="https://nomoredebts.org" target="_blank">nomoredebts.org →</a></div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div>
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT — LIFE PLANNING ENGINE + ALL APP LOGIC
+══════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let S = JSON.parse(localStorage.getItem('btb_v3') || '{}');
+S.entries     = S.entries     || [];
+S.goals       = S.goals       || [];
+S.debts       = S.debts       || [];
+S.steps       = S.steps       || {};
+S.dm          = S.dm          || 'avalanche';
+S.dreams      = S.dreams      || [];
+S.streak      = S.streak      || 0;
+S.achievements= S.achievements|| [];
+S.checkins    = S.checkins    || 0;
+S.emgCur      = S.emgCur      || 0;
+S.emgMo       = S.emgMo       || 0;
+S.plans       = S.plans       || {}; // planId → saved plan data
+function save(){ localStorage.setItem('btb_v3', JSON.stringify(S)); }
+
+/* ════════════════════════════════════════
+   DREAM DATA
+════════════════════════════════════════ */
+const DREAMS = [
+  { id:'vacation',  emoji:'✈️',  label:'Take a Vacation',    color:'#1a6b8a', glow:'rgba(26,107,138,.09)',  accent:'rgba(26,107,138,.06)' },
+  { id:'home',      emoji:'🏡',  label:'Buy a Home',          color:'#c0392b', glow:'rgba(192,57,43,.09)',  accent:'rgba(192,57,43,.06)'  },
+  { id:'debtfree',  emoji:'💳',  label:'Become Debt Free',    color:'#2d6a4f', glow:'rgba(45,106,79,.09)',  accent:'rgba(45,106,79,.06)'  },
+  { id:'vehicle',   emoji:'🚗',  label:'Buy a Vehicle',       color:'#b07d2a', glow:'rgba(176,125,42,.09)', accent:'rgba(176,125,42,.06)' },
+  { id:'education', emoji:'🎓',  label:'Save for Education',  color:'#6c5b8e', glow:'rgba(108,91,142,.09)', accent:'rgba(108,91,142,.06)' },
+  { id:'baby',      emoji:'👶',  label:'Prepare for a Baby',  color:'#c0392b', glow:'rgba(192,57,43,.09)',  accent:'rgba(192,57,43,.06)'  },
+  { id:'pet',       emoji:'🐶',  label:'Get a Pet',           color:'#b07d2a', glow:'rgba(176,125,42,.09)', accent:'rgba(176,125,42,.06)' },
+  { id:'reno',      emoji:'🛠',  label:'Renovate My Home',    color:'#2d6a4f', glow:'rgba(45,106,79,.09)',  accent:'rgba(45,106,79,.06)'  },
+  { id:'business',  emoji:'💼',  label:'Start a Business',    color:'#1a6b8a', glow:'rgba(26,107,138,.09)', accent:'rgba(26,107,138,.06)' },
+  { id:'retire',    emoji:'🏖',  label:'Plan Retirement',     color:'#6c5b8e', glow:'rgba(108,91,142,.09)', accent:'rgba(108,91,142,.06)' },
+  { id:'emg',       emoji:'💰',  label:'Emergency Fund',      color:'#2d6a4f', glow:'rgba(45,106,79,.09)',  accent:'rgba(45,106,79,.06)'  },
+  { id:'invest',    emoji:'📈',  label:'Grow Investments',    color:'#b07d2a', glow:'rgba(176,125,42,.09)', accent:'rgba(176,125,42,.06)' },
+  { id:'move',      emoji:'🏠',  label:'Move to a New City',  color:'#1a6b8a', glow:'rgba(26,107,138,.09)', accent:'rgba(26,107,138,.06)' },
+];
+
+/* ════════════════════════════════════════
+   LIFE PLANNING ENGINE
+   ─────────────────────────────────────
+   Architecture:
+   PlannerConfig {
+     id, name, emoji, color, description,
+     steps: ['questions','analysis','budget',
+             'timeline','checklist','resources','progress'],
+     questions: [ { id, label, type, placeholder,
+                    hint, options, grid, required } ],
+     calculate(answers) → { items[], total, monthly, months, timeline[] },
+     checklist(answers) → [ { id, title, detail, tag, tagColor } ],
+     resources: [ { icon, title, desc, url, bg } ],
+     aiPrompt(answers, name) → string,
+   }
+════════════════════════════════════════ */
+
+const ENGINE_STEPS = [
+  { id:'questions', label:'Questions' },
+  { id:'analysis',  label:'AI Analysis' },
+  { id:'budget',    label:'Budget' },
+  { id:'timeline',  label:'Timeline' },
+  { id:'checklist', label:'Checklist' },
+  { id:'resources', label:'Resources' },
+  { id:'progress',  label:'Progress' },
+];
+
+// ── PLANNER REGISTRY ──
+// Adding a new planner = add one object here. Zero engine code changes.
+const PLANNERS = {};
+
+function registerPlanner(config){
+  PLANNERS[config.id] = config;
+}
+
+/* ─── VACATION PLANNER ─── */
+registerPlanner({
+  id: 'vacation',
+  name: 'Vacation Planner',
+  emoji: '✈️',
+  color: '#1a6b8a',
+  description: 'Plan your family trip with a real budget, savings timeline, and packing checklist.',
+  questions: [
+    { id:'destination', label:'Where are you going?', type:'text', placeholder:'e.g. Cancún, Mexico', required:true },
+    { id:'month',       label:'Travel month', type:'month', required:true },
+    { id:'adults',      label:'Number of adults', type:'number', placeholder:'2', required:true, grid:'c2' },
+    { id:'children',    label:'Number of children', type:'number', placeholder:'0', grid:'c2' },
+    { id:'style',       label:'Travel style', type:'select', options:['Budget-friendly','Comfortable','Luxury'], required:true },
+    { id:'transport',   label:'How are you getting there?', type:'select', options:['Flights','Drive','Train','Cruise'] },
+    { id:'flights',     label:'Estimated flights (total $)', type:'number', placeholder:'1200', hint:'Check Google Flights for estimates' },
+    { id:'hotel_nights',label:'Hotel nights', type:'number', placeholder:'7', grid:'c2' },
+    { id:'hotel_night', label:'Hotel per night ($)', type:'number', placeholder:'180', grid:'c2' },
+    { id:'food',        label:'Daily food budget per person ($)', type:'number', placeholder:'60' },
+    { id:'activities',  label:'Activities & tours budget ($)', type:'number', placeholder:'500' },
+    { id:'shopping',    label:'Shopping allowance ($)', type:'number', placeholder:'300' },
+    { id:'insurance',   label:'Travel insurance estimate ($)', type:'number', placeholder:'120', hint:'Recommended — especially with children' },
+    { id:'emergency',   label:'Emergency buffer ($)', type:'number', placeholder:'300', hint:'Always carry a buffer. Aim for 10% of total.' },
+  ],
+  calculate(a){
+    const adults   = parseInt(a.adults)||2;
+    const children = parseInt(a.children)||0;
+    const people   = adults + children;
+    const nights   = parseInt(a.hotel_nights)||7;
+    const flights  = parseFloat(a.flights)||0;
+    const hotel    = (parseFloat(a.hotel_night)||180) * nights;
+    const food     = (parseFloat(a.food)||60) * people * nights;
+    const acts     = parseFloat(a.activities)||500;
+    const shop     = parseFloat(a.shopping)||300;
+    const ins      = parseFloat(a.insurance)||120;
+    const emg      = parseFloat(a.emergency)||300;
+    const items = [
+      { label:'Flights / Transport', amount:flights },
+      { label:`Hotel (${nights} nights)`, amount:hotel },
+      { label:`Food (${nights} days × ${people} people)`, amount:food },
+      { label:'Activities & Tours', amount:acts },
+      { label:'Shopping', amount:shop },
+      { label:'Travel Insurance', amount:ins },
+      { label:'Emergency Buffer', amount:emg },
+    ];
+    const total = items.reduce((s,i)=>s+i.amount, 0);
+    const now = new Date();
+    const travel = a.month ? new Date(a.month+'-01') : new Date(now.getFullYear(), now.getMonth()+6, 1);
+    const months = Math.max(1, Math.round((travel-now)/2629800000));
+    const monthly = Math.ceil(total/months);
+    const timeline = [];
+    let saved = 0;
+    for(let m=0; m<Math.min(months,12); m++){
+      saved += monthly;
+      const d = new Date(now); d.setMonth(d.getMonth()+m+1);
+      timeline.push({ label:d.toLocaleDateString('en-CA',{month:'short',year:'numeric'}), amount:Math.min(saved,total), milestone: m===months-1?'✈️ Vacation funded!': saved>=total*0.5&&m<months-1?'50% there!':null });
+    }
+    return { items, total, monthly, months };
+  },
+  checklist(a){
+    const destination = a.destination||'your destination';
+    return [
+      { id:'passport',   title:'Check passport expiry',          detail:'Passports must be valid 6 months beyond travel date.',          tag:'Legal',    tagColor:'var(--maple)' },
+      { id:'visa',       title:'Check visa requirements',         detail:`Research visa needs for ${destination} at canada.ca/travel.`,   tag:'Legal',    tagColor:'var(--maple)' },
+      { id:'insurance',  title:'Purchase travel insurance',       detail:'Medical, trip cancellation, and baggage. Required for families.', tag:'Safety',  tagColor:'var(--forest)' },
+      { id:'flights',    title:'Book flights',                    detail:'Book 6–8 weeks out for best prices. Use Skyscanner or Google Flights.', tag:'Book', tagColor:'var(--sky)' },
+      { id:'hotel',      title:'Book accommodation',              detail:'Compare hotels, Airbnb, and all-inclusive resorts.',            tag:'Book',     tagColor:'var(--sky)' },
+      { id:'tfsa',       title:'Set up dedicated TFSA savings',   detail:'Open a separate TFSA savings account just for this vacation.',  tag:'Finance',  tagColor:'var(--gold)' },
+      { id:'automate',   title:'Automate monthly transfers',      detail:'Set up automatic transfers the day after payday.',             tag:'Finance',  tagColor:'var(--gold)' },
+      { id:'notify',     title:'Notify your bank',                detail:'Tell your bank you\'re travelling to avoid frozen cards.',      tag:'Banking',  tagColor:'var(--lav)' },
+      { id:'currency',   title:'Arrange foreign currency',        detail:'Get cash at your bank before travel — better rates than airports.', tag:'Banking', tagColor:'var(--lav)' },
+      { id:'packing',    title:'Create packing list',             detail:'Start your list 2 weeks before departure.',                    tag:'Prep',     tagColor:'var(--text2)' },
+    ];
+  },
+  resources: [
+    { icon:'✈️', title:'Google Flights', desc:'Track prices and find the cheapest dates to fly.', url:'https://flights.google.com', bg:'var(--ss)' },
+    { icon:'🏨', title:'Booking.com', desc:'Compare hotels, hostels, and apartments worldwide.', url:'https://booking.com', bg:'var(--fs)' },
+    { icon:'🛡', title:'Travel Insurance (CAA)', desc:'Canadian travel insurance with medical coverage.', url:'https://www.caasco.com/insurance/travel-insurance', bg:'var(--ms)' },
+    { icon:'🇨🇦', title:'Government Travel Advisories', desc:'Check safety conditions before booking.', url:'https://travel.gc.ca/travelling/advisories', bg:'var(--gs)' },
+    { icon:'💱', title:'Wise — Currency Transfer', desc:'Send money abroad at real exchange rates.', url:'https://wise.com', bg:'var(--lavs)' },
+  ],
+  aiPrompt(a, name){
+    return `You are a Canadian family travel finance coach. The user's name is ${name||'the user'}. They are planning a trip to ${a.destination||'an unknown destination'} for ${parseInt(a.adults)||2} adults and ${parseInt(a.children)||0} children with a ${a.style||'comfortable'} travel style. Their travel month is ${a.month||'TBD'}. Give them 3 practical, friendly tips to make this trip happen within budget and enjoy it stress-free. Include one Canada-specific tip (TFSA for savings, CAA insurance, or travel advisories). Keep it warm, 3 paragraphs, no markdown.`;
+  },
+});
+
+/* ─── HOME PURCHASE PLANNER ─── */
+registerPlanner({
+  id: 'home',
+  name: 'Home Purchase Planner',
+  emoji: '🏡',
+  color: '#c0392b',
+  description: 'Plan your down payment, closing costs, and mortgage for buying a home in Canada.',
+  questions: [
+    { id:'province',    label:'Province', type:'select', options:['Alberta','British Columbia','Ontario','Quebec','Saskatchewan','Manitoba','Nova Scotia','Other'], required:true },
+    { id:'city',        label:'City or area', type:'text', placeholder:'e.g. Edmonton', required:true },
+    { id:'price',       label:'Target home price ($)', type:'number', placeholder:'450000', required:true, hint:'Median Edmonton home price is ~$430,000 in 2025' },
+    { id:'down_pct',    label:'Down payment %', type:'select', options:['5% (minimum)','10%','15%','20% (avoids CMHC)','25%+'], required:true },
+    { id:'timeline',    label:'Target purchase date', type:'month', required:true },
+    { id:'saved',       label:'Already saved for down payment ($)', type:'number', placeholder:'0' },
+    { id:'closing',     label:'Estimated closing costs ($)', type:'number', placeholder:'5000', hint:'Typically 1.5–4% of purchase price in Canada' },
+    { id:'moving',      label:'Moving costs ($)', type:'number', placeholder:'2000' },
+    { id:'furniture',   label:'Furniture & setup ($)', type:'number', placeholder:'5000' },
+    { id:'reno',        label:'Immediate renovations ($)', type:'number', placeholder:'0' },
+    { id:'reserve',     label:'Post-purchase emergency reserve ($)', type:'number', placeholder:'5000', hint:'Strongly recommended — homes always have surprises' },
+  ],
+  calculate(a){
+    const price  = parseFloat(a.price)||450000;
+    const pctMap = {'5% (minimum)':0.05,'10%':0.10,'15%':0.15,'20% (avoids CMHC)':0.20,'25%+':0.25};
+    const pct    = pctMap[a.down_pct]||0.05;
+    const down   = price * pct;
+    const cmhc   = pct<0.20 ? price*(pct<0.065?0.04:pct<0.10?0.031:0.028) : 0;
+    const closing= parseFloat(a.closing)||Math.round(price*0.02);
+    const moving = parseFloat(a.moving)||2000;
+    const furn   = parseFloat(a.furniture)||5000;
+    const reno   = parseFloat(a.reno)||0;
+    const res    = parseFloat(a.reserve)||5000;
+    const alreadySaved = parseFloat(a.saved)||0;
+    const items = [
+      { label:`Down Payment (${Math.round(pct*100)}%)`, amount:down },
+      { label:'CMHC Mortgage Insurance', amount:Math.round(cmhc) },
+      { label:'Closing Costs (legal, title, etc.)', amount:closing },
+      { label:'Moving Costs', amount:moving },
+      { label:'Furniture & Setup', amount:furn },
+      { label:'Renovations', amount:reno },
+      { label:'Post-Purchase Reserve', amount:res },
+    ];
+    const total   = items.reduce((s,i)=>s+i.amount, 0);
+    const needed  = Math.max(0, total - alreadySaved);
+    const now     = new Date();
+    const target  = a.timeline ? new Date(a.timeline+'-01') : new Date(now.getFullYear()+2, 0, 1);
+    const months  = Math.max(1, Math.round((target-now)/2629800000));
+    const monthly = Math.ceil(needed/months);
+    const mortgage= (price - down) * (1 + pct<0.20?cmhc/price:0);
+    const timeline = [];
+    let acc = alreadySaved;
+    for(let m=0; m<Math.min(months,12); m++){
+      acc += monthly;
+      const d = new Date(now); d.setMonth(d.getMonth()+m+1);
+      timeline.push({ label:d.toLocaleDateString('en-CA',{month:'short',year:'numeric'}), amount:Math.min(acc,total), milestone:m===months-1?'🏡 Ready to buy!':acc>=down?'Down payment reached!':null });
+    }
+    return { items, total, monthly, months };
+  },
+  checklist(a){
+    const province = a.province||'Alberta';
+    return [
+      { id:'preapproval', title:'Get mortgage pre-approval', detail:'Contact your bank or a mortgage broker. Pre-approval locks in your rate for 90–120 days.', tag:'Priority', tagColor:'var(--maple)' },
+      { id:'fhsa',       title:'Open a First Home Savings Account (FHSA)', detail:'$8,000/year tax-deductible, tax-free for first home purchase. Combine with RRSP HBP.', tag:'Finance', tagColor:'var(--gold)' },
+      { id:'hbp',        title:'Check RRSP Home Buyers Plan (HBP)', detail:'Withdraw up to $35,000 from RRSP tax-free for first home. Must repay over 15 years.', tag:'Finance', tagColor:'var(--gold)' },
+      { id:'credit',     title:'Review your credit score', detail:'Aim for 680+. Check free at Borrowell or Credit Karma Canada.', tag:'Credit', tagColor:'var(--lav)' },
+      { id:'realtor',    title:'Choose a buyer\'s agent (free to you)', detail:'A buyer\'s realtor is paid by the seller — use one. Interview at least 2.', tag:'Team', tagColor:'var(--sky)' },
+      { id:'lawyer',     title:'Hire a real estate lawyer', detail:`Required in ${province}. Budget $1,500–$2,500 for closing.`, tag:'Legal', tagColor:'var(--maple)' },
+      { id:'inspection', title:'Budget for home inspection', detail:'$400–$600. Never skip this — it protects you from hidden issues.', tag:'Safety', tagColor:'var(--forest)' },
+      { id:'insurance',  title:'Get home insurance quotes', detail:'Required by lenders before closing. Get 3 quotes.', tag:'Insurance', tagColor:'var(--forest)' },
+      { id:'automate',   title:'Automate monthly savings transfers', detail:'Set up automatic transfers to your FHSA the day after payday.', tag:'Finance', tagColor:'var(--gold)' },
+      { id:'utilities',  title:'Research utility costs in target area', detail:'Call utility providers or ask neighbours for typical monthly costs.', tag:'Prep', tagColor:'var(--text2)' },
+    ];
+  },
+  resources: [
+    { icon:'🏠', title:'CMHC Affordability Calculator', desc:'Canada Mortgage and Housing Corporation\'s free tools.', url:'https://www.cmhc-schl.gc.ca/consumers/home-buying', bg:'var(--ms)' },
+    { icon:'💰', title:'FHSA — First Home Savings Account', desc:'CRA guide to Canada\'s newest tax-advantaged account for first-time buyers.', url:'https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/first-home-savings-account.html', bg:'var(--gs)' },
+    { icon:'📊', title:'RRSP Home Buyers Plan', desc:'Withdraw up to $35,000 from your RRSP tax-free for a first home.', url:'https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/rrsps-related-plans/what-home-buyers-plan.html', bg:'var(--fs)' },
+    { icon:'🔍', title:'Realtor.ca', desc:'Canada\'s official MLS listing service — search homes in any city.', url:'https://www.realtor.ca', bg:'var(--ss)' },
+    { icon:'📈', title:'Ratehub — Mortgage Comparison', desc:'Compare mortgage rates from every Canadian lender.', url:'https://www.ratehub.ca', bg:'var(--lavs)' },
+  ],
+  aiPrompt(a, name){
+    const price = parseFloat(a.price)||450000;
+    return `You are a Canadian home buying finance coach. The user's name is ${name||'the user'}. They want to buy a home in ${a.city||'Canada'}, ${a.province||'Alberta'} priced around $${price.toLocaleString()}. They are targeting ${a.down_pct||'5%'} down with a purchase date of ${a.timeline||'TBD'}. Give them 3 warm, practical tips focused on: saving the down payment efficiently using Canadian accounts (FHSA, RRSP HBP), what to watch out for as a first-time buyer in Canada, and how to prepare their credit and finances. Keep it friendly and Canadian-specific. 3 paragraphs, no markdown.`;
+  },
+});
+
+/* ─── VEHICLE PLANNER ─── */
+registerPlanner({
+  id: 'vehicle',
+  name: 'Vehicle Planner',
+  emoji: '🚗',
+  color: '#b07d2a',
+  description: 'Plan the full cost of owning a vehicle — purchase, insurance, fuel, and maintenance.',
+  questions: [
+    { id:'type',        label:'Vehicle type', type:'select', options:['Sedan','SUV / Crossover','Truck','Minivan','EV / Hybrid','Motorcycle'], required:true },
+    { id:'new_used',    label:'New or used?', type:'select', options:['Brand new','Used (1–3 years)','Used (4+ years)'], required:true },
+    { id:'price',       label:'Target vehicle price ($)', type:'number', placeholder:'35000', required:true },
+    { id:'financing',   label:'Cash or financing?', type:'select', options:['Financing','Cash','Lease'] },
+    { id:'down',        label:'Down payment / cash savings ($)', type:'number', placeholder:'5000' },
+    { id:'term',        label:'Loan term (months)', type:'number', placeholder:'60', hint:'Common terms: 48, 60, 72, 84 months', grid:'c2' },
+    { id:'rate',        label:'Interest rate (%)', type:'number', placeholder:'6.99', grid:'c2' },
+    { id:'insurance',   label:'Monthly insurance estimate ($)', type:'number', placeholder:'180', hint:'Alberta average is ~$180/month' },
+    { id:'fuel',        label:'Monthly fuel cost ($)', type:'number', placeholder:'150' },
+    { id:'maintenance', label:'Annual maintenance budget ($)', type:'number', placeholder:'1200', hint:'Budget $100/month for oil, tires, and repairs' },
+    { id:'winter_tires',label:'Winter tires ($)', type:'number', placeholder:'800', hint:'Required in most Canadian winters' },
+    { id:'timeline',    label:'When do you want to buy?', type:'month' },
+  ],
+  calculate(a){
+    const price   = parseFloat(a.price)||35000;
+    const down    = parseFloat(a.down)||5000;
+    const financed= price - down;
+    const rate    = (parseFloat(a.rate)||6.99)/100/12;
+    const term    = parseInt(a.term)||60;
+    const payment = a.financing==='Cash' ? 0 : rate>0 ? financed*(rate*Math.pow(1+rate,term))/(Math.pow(1+rate,term)-1) : financed/term;
+    const ins     = parseFloat(a.insurance)||180;
+    const fuel    = parseFloat(a.fuel)||150;
+    const maint   = (parseFloat(a.maintenance)||1200)/12;
+    const winter  = (parseFloat(a.winter_tires)||800)/60; // spread over 5 years
+    const monthly_total = payment + ins + fuel + maint + winter;
+    const items = [
+      { label:'Vehicle Purchase Price', amount:price },
+      { label:'Down Payment / Deposit', amount:-down },
+      { label:'Insurance (1 year)', amount:ins*12 },
+      { label:'Fuel (1 year)', amount:fuel*12 },
+      { label:'Maintenance (1 year)', amount:parseFloat(a.maintenance)||1200 },
+      { label:'Winter Tires', amount:parseFloat(a.winter_tires)||800 },
+    ];
+    const totalFirstYear = price - down + ins*12 + fuel*12 + (parseFloat(a.maintenance)||1200) + (parseFloat(a.winter_tires)||800);
+    const now = new Date();
+    const target = a.timeline ? new Date(a.timeline+'-01') : new Date(now.getFullYear(), now.getMonth()+8, 1);
+    const months = Math.max(1, Math.round((target-now)/2629800000));
+    const monthly = Math.ceil(down/months);
+    return { items, total:price, monthly, months, monthlyOwnership:Math.round(monthly_total) };
+  },
+  checklist(a){
+    return [
+      { id:'budget',    title:'Confirm total monthly ownership cost', detail:'Purchase payment + insurance + fuel + maintenance. Stay under 15% of take-home pay.', tag:'Finance', tagColor:'var(--gold)' },
+      { id:'insurance', title:'Get 3 insurance quotes before buying', detail:'Rates vary hugely. Compare Intact, Aviva, Wawanesa, and brokers.', tag:'Insurance', tagColor:'var(--forest)' },
+      { id:'history',   title:'Run a CarProof / AutoVerify report (used)', detail:'$60–$80. Shows accidents, liens, ownership history. Never skip on used vehicles.', tag:'Safety', tagColor:'var(--maple)' },
+      { id:'mechanic',  title:'Pre-purchase mechanical inspection (used)', detail:'$100–$150 at an independent mechanic. Could save thousands.', tag:'Safety', tagColor:'var(--maple)' },
+      { id:'winter',    title:'Budget for winter tires', detail:'Steel rims + tires: $800–$1,500. Essential in Canada.', tag:'Prep', tagColor:'var(--sky)' },
+      { id:'financing', title:'Pre-arrange financing before the dealership', detail:'Your bank or credit union typically beats dealer financing. Know your rate first.', tag:'Finance', tagColor:'var(--gold)' },
+      { id:'negotiate', title:'Negotiate the price — not the payment', detail:'Always discuss total vehicle price, not monthly payment. Dealers use payment to obscure true cost.', tag:'Tip', tagColor:'var(--lav)' },
+      { id:'automate',  title:'Automate down payment savings', detail:'Set up a dedicated savings account and automate monthly transfers.', tag:'Finance', tagColor:'var(--gold)' },
+    ];
+  },
+  resources: [
+    { icon:'🚗', title:'AutoTrader Canada', desc:'Search new and used vehicles across Canada.', url:'https://www.autotrader.ca', bg:'var(--gs)' },
+    { icon:'📋', title:'CarProof / AutoVerify', desc:'Vehicle history reports for used cars.', url:'https://www.autoverify.com', bg:'var(--ms)' },
+    { icon:'📊', title:'Ratehub — Auto Loans', desc:'Compare auto loan rates from Canadian lenders.', url:'https://www.ratehub.ca/auto-insurance', bg:'var(--fs)' },
+    { icon:'🛡', title:'Insurance Comparison (Kanetix)', desc:'Compare car insurance quotes from multiple Canadian insurers.', url:'https://www.kanetix.ca', bg:'var(--ss)' },
+  ],
+  aiPrompt(a, name){
+    return `You are a Canadian vehicle finance advisor. The user's name is ${name||'the user'}. They want to buy a ${a.new_used||'used'} ${a.type||'vehicle'} for around $${(parseFloat(a.price)||35000).toLocaleString()} in Canada. They plan to ${a.financing||'finance'} it. Give them 3 practical tips: how to get the best financing rate in Canada, what to watch out for when buying a vehicle here, and one money-saving tip specific to Canadian vehicle ownership (insurance, winter tires, etc.). Warm, helpful, 3 paragraphs, no markdown.`;
+  },
+});
+
+/* ─── EMERGENCY FUND PLANNER ─── */
+registerPlanner({
+  id: 'emg',
+  name: 'Emergency Fund Planner',
+  emoji: '💰',
+  color: '#2d6a4f',
+  description: 'Build your family safety net step by step with the right Canadian accounts.',
+  questions: [
+    { id:'monthly_exp', label:'Monthly household expenses ($)', type:'number', placeholder:'4000', required:true, hint:'Include rent, food, utilities, and essentials' },
+    { id:'target_mo',   label:'Months of coverage to target', type:'select', options:['3 months (minimum)','6 months (recommended)','9 months','12 months (self-employed)'], required:true },
+    { id:'current',     label:'Currently saved ($)', type:'number', placeholder:'0' },
+    { id:'monthly_save',label:'How much can you save per month? ($)', type:'number', placeholder:'200', required:true },
+    { id:'employment',  label:'Employment type', type:'select', options:['Salaried employee','Hourly / part-time','Self-employed','Oil & gas / contract','Multiple income sources'] },
+    { id:'dependents',  label:'Number of dependents', type:'number', placeholder:'0', hint:'Children, elderly parents, etc.' },
+  ],
+  calculate(a){
+    const monthly = parseFloat(a.monthly_exp)||4000;
+    const moMap   = {'3 months (minimum)':3,'6 months (recommended)':6,'9 months':9,'12 months (self-employed)':12};
+    const targetM = moMap[a.target_mo]||6;
+    const target  = monthly * targetM;
+    const current = parseFloat(a.current)||0;
+    const needed  = Math.max(0, target-current);
+    const perMonth= parseFloat(a.monthly_save)||200;
+    const months  = perMonth>0 ? Math.ceil(needed/perMonth) : 999;
+    const items = [
+      { label:`Target (${targetM} months × $${monthly.toLocaleString()})`, amount:target },
+      { label:'Already saved', amount:-current },
+      { label:'Remaining to save', amount:needed },
+    ];
+    const now = new Date();
+    const timeline = [];
+    let acc = current;
+    for(let m=0; m<Math.min(months<999?months:12,18); m++){
+      acc = Math.min(target, acc+perMonth);
+      const d = new Date(now); d.setMonth(d.getMonth()+m+1);
+      timeline.push({ label:d.toLocaleDateString('en-CA',{month:'short',year:'numeric'}), amount:acc, milestone:acc>=target?'💰 Goal reached!':acc>=target*0.5?'Halfway there!':null });
+    }
+    return { items, total:target, monthly:perMonth, months:months<999?months:null };
+  },
+  checklist(a){
+    return [
+      { id:'calc',     title:'Calculate your exact monthly expenses', detail:'List every essential: rent, food, utilities, insurance, minimum debt payments.', tag:'First Step', tagColor:'var(--maple)' },
+      { id:'account',  title:'Open a dedicated TFSA HISA', detail:'Keep emergency fund separate from spending. EQ Bank, Simplii, or Tangerine offer 3.5–5%.', tag:'Finance', tagColor:'var(--gold)' },
+      { id:'starter',  title:'Build $1,000 starter fund first', detail:'Before tackling the full goal, hitting $1,000 gives immediate protection and builds momentum.', tag:'Milestone', tagColor:'var(--forest)' },
+      { id:'automate', title:'Automate transfers on payday', detail:'Move money to your emergency fund the same day you get paid — before you can spend it.', tag:'Habit', tagColor:'var(--sky)' },
+      { id:'no_touch', title:'Define what counts as an emergency', detail:'Job loss, medical emergency, major home/car repair. Not vacations, sales, or "opportunities".', tag:'Rules', tagColor:'var(--lav)' },
+      { id:'replenish',title:'Plan to replenish after using it', detail:'If you ever use your emergency fund, resume contributions immediately after the crisis passes.', tag:'Habit', tagColor:'var(--sky)' },
+    ];
+  },
+  resources: [
+    { icon:'📊', title:'EQ Bank TFSA Savings', desc:'Consistently one of Canada\'s highest HISA rates — tax-free in your TFSA.', url:'https://www.eqbank.ca/personal-banking/accounts/tfsa-savings-account', bg:'var(--fs)' },
+    { icon:'🏦', title:'Simplii Financial', desc:'No-fee banking with competitive HISA rates. Free for Canadians.', url:'https://www.simplii.com', bg:'var(--ss)' },
+    { icon:'📋', title:'TFSA CRA Guide', desc:'Check your TFSA contribution room at CRA My Account.', url:'https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/tax-free-savings-account.html', bg:'var(--gs)' },
+  ],
+  aiPrompt(a, name){
+    const exp = parseFloat(a.monthly_exp)||4000;
+    const moMap = {'3 months (minimum)':3,'6 months (recommended)':6,'9 months':9,'12 months (self-employed)':12};
+    const target = (moMap[a.target_mo]||6)*exp;
+    return `You are a Canadian family finance coach. The user's name is ${name||'the user'}. They want to build a $${target.toLocaleString()} emergency fund (${a.target_mo||'6 months'} of expenses). They currently have $${a.current||0} saved and can put away $${a.monthly_save||200}/month. They work in ${a.employment||'salaried employment'}. Give 3 warm, practical tips: the best Canadian account to use, how to automate savings so they don't have to think about it, and one motivational framing to keep them going. 3 paragraphs, no markdown.`;
+  },
+});
+
+/* ════════════════════════════════════════
+   ENGINE STATE + RUNTIME
+════════════════════════════════════════ */
+let ENG = {
+  planId:    null,
+  config:    null,
+  step:      0,       // 0=questions, 1=analysis, 2=budget, 3=timeline, 4=checklist, 5=resources, 6=progress
+  answers:   {},
+  result:    null,
+  aiText:    '',
+  checkboxes:{},
+};
+
+function openEngine(planId){
+  const config = PLANNERS[planId];
+  if(!config) return;
+  ENG.planId   = planId;
+  ENG.config   = config;
+  ENG.step     = 0;
+  ENG.answers  = {};
+  ENG.result   = null;
+  ENG.aiText   = '';
+  // Load saved plan if exists
+  if(S.plans[planId]){
+    ENG.answers   = S.plans[planId].answers   || {};
+    ENG.result    = S.plans[planId].result    || null;
+    ENG.aiText    = S.plans[planId].aiText    || '';
+    ENG.checkboxes= S.plans[planId].checkboxes|| {};
+    // If has a result, open at progress
+    if(ENG.result) ENG.step = 6;
+  } else {
+    ENG.checkboxes = {};
+  }
+  document.getElementById('em-emoji').textContent = config.emoji;
+  document.getElementById('em-title').textContent = config.name;
+  document.getElementById('em-sub').textContent   = config.description;
+  renderEngineProgress();
+  renderEngineStep();
+  document.getElementById('engine-overlay').classList.add('open');
+}
+
+function closeEngine(){
+  document.getElementById('engine-overlay').classList.remove('open');
+}
+
+function renderEngineProgress(){
+  const steps = ENGINE_STEPS;
+  document.getElementById('em-steps').innerHTML = steps.map((s,i)=>{
+    const cls = i < ENG.step ? 'done' : i === ENG.step ? 'current' : '';
+    return `<div class="em-step-item">
+      <div class="em-step-dot ${cls}">${i<ENG.step?'✓':i+1}</div>
+      <div class="em-step-lbl ${cls}">${s.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderEngineStep(){
+  renderEngineProgress();
+  const body = document.getElementById('em-body');
+  const footNote = document.getElementById('em-footer-note');
+  const backBtn  = document.getElementById('em-back-btn');
+  const nextBtn  = document.getElementById('em-next-btn');
+  backBtn.style.display = ENG.step === 0 ? 'none' : 'inline-flex';
+  nextBtn.textContent   = ENG.step === ENGINE_STEPS.length-1 ? 'Close ✓' : 'Continue →';
+  nextBtn.className     = ENG.step === ENGINE_STEPS.length-1 ? 'btn btn-forest' : 'btn btn-maple';
+
+  switch(ENG.step){
+
+    case 0: // QUESTIONS
+      footNote.textContent = 'Answer as accurately as you can — you can update later.';
+      body.innerHTML = renderQuestions();
+      // Restore saved answers
+      ENG.config.questions.forEach(q=>{
+        const el = document.getElementById('eq-'+q.id);
+        if(el && ENG.answers[q.id]) el.value = ENG.answers[q.id];
+      });
+      break;
+
+    case 1: // AI ANALYSIS
+      footNote.textContent = 'Personalised advice for your specific situation.';
+      body.innerHTML = `
+        <div class="ai-analysis-card" id="ai-card">
+          <div class="ai-analysis-label">AI Analysis — ${ENG.config.name}</div>
+          ${ENG.aiText
+            ? `<div class="ai-analysis-text">${ENG.aiText.replace(/\n/g,'<br>')}</div>`
+            : `<div class="ai-analysis-loading"><div class="ald"></div><div class="ald"></div><div class="ald"></div><span style="margin-left:6px">Generating your personalised advice...</span></div>`
+          }
+        </div>
+        <div class="info-box">Your AI analysis is saved and updated each time you revisit this planner.</div>
+      `;
+      if(!ENG.aiText) fetchAiAnalysis();
+      break;
+
+    case 2: // BUDGET
+      footNote.textContent = 'Estimated costs based on your answers.';
+      if(!ENG.result) ENG.result = ENG.config.calculate(ENG.answers);
+      body.innerHTML = renderBudget();
+      break;
+
+    case 3: // TIMELINE
+      footNote.textContent = 'Your personalised savings roadmap.';
+      if(!ENG.result) ENG.result = ENG.config.calculate(ENG.answers);
+      body.innerHTML = renderTimeline();
+      break;
+
+    case 4: // CHECKLIST
+      footNote.textContent = 'Check things off as you go.';
+      body.innerHTML = renderChecklist();
+      break;
+
+    case 5: // RESOURCES
+      footNote.textContent = 'Trusted tools and links to help you take action.';
+      body.innerHTML = renderResources();
+      break;
+
+    case 6: // PROGRESS
+      footNote.textContent = 'Your plan is saved on this device.';
+      if(!ENG.result) ENG.result = ENG.config.calculate(ENG.answers);
+      body.innerHTML = renderProgress();
+      break;
+  }
+}
+
+function renderQuestions(){
+  const qs = ENG.config.questions;
+  let html = '<div class="eq-grid">';
+  let inGrid = false;
+  qs.forEach((q,i)=>{
+    const next = qs[i+1];
+    const isC2start = q.grid==='c2' && (!qs[i-1]||qs[i-1].grid!=='c2');
+    const isC2end   = q.grid==='c2' && (!next||next.grid!=='c2');
+    if(isC2start) html += '<div class="eq-grid c2">';
+    html += `<div class="eq-field">
+      <label>${q.label}${q.required?'':' <span style="color:var(--text3);font-weight:400">(optional)</span>'}</label>
+      ${q.type==='select'
+        ? `<select class="inp" id="eq-${q.id}"><option value="">Select...</option>${(q.options||[]).map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`
+        : `<input class="inp" type="${q.type||'text'}" id="eq-${q.id}" placeholder="${q.placeholder||''}" ${q.type==='number'?'min="0"':''}/>`
+      }
+      ${q.hint?`<div class="eq-hint">${q.hint}</div>`:''}
+    </div>`;
+    if(isC2end) html += '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderBudget(){
+  const r = ENG.result;
+  if(!r) return '<div style="color:var(--text3);font-size:13px">No data yet.</div>';
+  return `
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:6px">Estimated Total</div>
+      <div style="font-family:var(--dp);font-size:44px;font-weight:400;color:var(--maple)">$${r.total.toLocaleString('en-CA')}</div>
+      ${r.monthly?`<div style="font-size:13px;color:var(--text2);margin-top:5px">Save <strong style="color:var(--text)">$${r.monthly.toLocaleString('en-CA')}/month</strong> for ${r.months||'?'} months</div>`:''}
+    </div>
+    <table class="budget-table">
+      ${r.items.map(item=>`
+        <tr>
+          <td>${item.label}</td>
+          <td style="color:${item.amount<0?'var(--forest)':'var(--text)'}">
+            ${item.amount<0?'−':''}$${Math.abs(item.amount).toLocaleString('en-CA')}
+          </td>
+        </tr>
+      `).join('')}
+    </table>
+    ${r.monthlyOwnership ? `<div class="tip" style="margin-top:14px"><div class="tip-lbl">Monthly Ownership Cost</div>All-in monthly cost: <strong>$${r.monthlyOwnership.toLocaleString('en-CA')}</strong> including payment, insurance, fuel, and maintenance.</div>` : ''}
+  `;
+}
+
+function renderTimeline(){
+  const r = ENG.result;
+  if(!r) return '<div style="color:var(--text3);font-size:13px">Complete budget step first.</div>';
+  const now = new Date();
+  let acc = parseFloat(ENG.answers.saved)||parseFloat(ENG.answers.current)||0;
+  const monthly = r.monthly||0;
+  const months  = r.months||12;
+  const tl = [];
+  for(let m=0; m<Math.min(months,18); m++){
+    acc = Math.min(r.total, acc+monthly);
+    const d = new Date(now); d.setMonth(d.getMonth()+m+1);
+    const pct = r.total>0 ? Math.round(acc/r.total*100) : 0;
+    tl.push({ label:d.toLocaleDateString('en-CA',{month:'short',year:'numeric'}), amount:acc, pct, milestone: m===months-1 ? ENG.config.emoji+' Goal reached!' : pct>=50&&pct<60?'50% there!':null });
+  }
+  return `
+    <div style="margin-bottom:16px">
+      <div style="font-size:13px;color:var(--text2)">Saving <strong style="color:var(--text)">$${monthly.toLocaleString('en-CA')}/month</strong> → Goal in <strong style="color:var(--maple)">${months} months</strong></div>
+    </div>
+    <div class="timeline-wrap">
+      ${tl.map(t=>`
+        <div class="tl-item">
+          <div class="tl-dot ${t.pct>=100?'done':''}"></div>
+          <div class="tl-month">${t.label}</div>
+          <div class="tl-label">$${t.amount.toLocaleString('en-CA')} saved <span style="color:var(--text3);font-size:11px">(${t.pct}%)</span></div>
+          <div class="pbt" style="height:3px;width:160px;margin-top:4px"><div class="pbf maple" style="width:${t.pct}%"></div></div>
+          ${t.milestone?`<div style="font-size:11px;color:var(--forest);font-weight:600;margin-top:3px">${t.milestone}</div>`:''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderChecklist(){
+  const items = ENG.config.checklist(ENG.answers);
+  return `
+    <div style="margin-bottom:12px;font-size:13px;color:var(--text2)">Check items off as you complete them. Progress is saved automatically.</div>
+    ${items.map(item=>{
+      const checked = ENG.checkboxes[item.id]||false;
+      return `<div class="cl-item">
+        <div class="cl-box ${checked?'chk':''}" onclick="toggleCL('${item.id}',this)">${checked?'✓':''}</div>
+        <div class="cl-body">
+          <div class="cl-title ${checked?'chk':''}">${item.title}<span class="cl-tag" style="background:${item.tagColor}20;color:${item.tagColor}">${item.tag}</span></div>
+          <div class="cl-detail">${item.detail}</div>
+        </div>
+      </div>`;
+    }).join('')}
+  `;
+}
+
+function toggleCL(id, el){
+  ENG.checkboxes[id] = !ENG.checkboxes[id];
+  el.classList.toggle('chk', ENG.checkboxes[id]);
+  el.textContent = ENG.checkboxes[id] ? '✓' : '';
+  const title = el.nextElementSibling?.querySelector('.cl-title');
+  if(title) title.classList.toggle('chk', ENG.checkboxes[id]);
+  savePlan();
+}
+
+function renderResources(){
+  const res = ENG.config.resources;
+  return `
+    <div style="margin-bottom:12px;font-size:13px;color:var(--text2)">Trusted tools and resources to help you move from planning to action.</div>
+    ${res.map(r=>`
+      <div class="res-item">
+        <div class="res-icon" style="background:${r.bg}">${r.icon}</div>
+        <div class="res-body">
+          <h4>${r.title}</h4>
+          <p>${r.desc}</p>
+          <a class="res-link" href="${r.url}" target="_blank">Visit ${r.title} →</a>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderProgress(){
+  const r = ENG.result;
+  const goal = S.goals.find(g=>g.planId===ENG.planId);
+  const saved = goal ? goal.saved : 0;
+  const total = r ? r.total : 0;
+  const pct   = total>0 ? Math.min(100,Math.round(saved/total*100)) : 0;
+  return `
+    <div style="text-align:center;margin-bottom:22px">
+      <div style="position:relative;display:inline-flex;margin-bottom:12px">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="var(--bg2)" stroke-width="10"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="${ENG.config.color}" stroke-width="10"
+            stroke-dasharray="314" stroke-dashoffset="${314-(pct/100)*314}"
+            stroke-linecap="round" transform="rotate(-90 60 60)"
+            style="transition:stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1)"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="font-family:var(--dp);font-size:28px;color:var(--text)">${pct}%</div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em">funded</div>
+        </div>
+      </div>
+      <div style="font-family:var(--dp);font-size:18px;color:var(--text);margin-bottom:4px">$${saved.toLocaleString('en-CA')} of $${total.toLocaleString('en-CA')}</div>
+      <div style="font-size:13px;color:var(--text2)">$${Math.max(0,total-saved).toLocaleString('en-CA')} remaining</div>
+    </div>
+    <div class="pbt" style="height:8px;margin-bottom:18px"><div class="pbf" style="width:${pct}%;background:${ENG.config.color}"></div></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-maple" onclick="addPlanSavings()">+ Add Savings</button>
+      <button class="btn btn-ghost" onclick="ENG.step=0;renderEngineStep()">Edit Answers</button>
+      <button class="btn btn-ghost" onclick="ENG.step=4;renderEngineStep()">View Checklist</button>
+    </div>
+    ${pct>=100?`<div class="tip" style="margin-top:14px"><div class="tip-lbl">🎉 Plan Complete!</div>You've reached your ${ENG.config.name} goal. Incredible work.</div>`:''}
+  `;
+}
+
+function addPlanSavings(){
+  const amt = parseFloat(prompt('Amount to add toward this plan ($CAD):'));
+  if(!isNaN(amt) && amt>0){
+    let goal = S.goals.find(g=>g.planId===ENG.planId);
+    if(!goal){
+      goal = { name:ENG.config.name, target:ENG.result?.total||0, saved:0, planId:ENG.planId, cat:ENG.config.name, id:Date.now() };
+      S.goals.push(goal);
+    }
+    goal.saved = Math.min(goal.target, goal.saved + amt);
+    save(); renderEngineStep(); buildDashDreams(); renderGoals();
+    if(goal.saved >= goal.target) showAch('🎉','Goal Reached!',ENG.config.name+' — you did it!');
+    else toast('Added $'+amt+' to '+ENG.config.name);
+  }
+}
+
+async function fetchAiAnalysis(){
+  const prompt = ENG.config.aiPrompt(ENG.answers, S.name);
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:600,
+        system:'You are a warm, knowledgeable Canadian family finance coach. Give practical, Canada-specific advice. Be encouraging. No markdown, plain text, 3 paragraphs max.',
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data = await res.json();
+    if(data.content?.[0]?.text){
+      ENG.aiText = data.content[0].text;
+      savePlan();
+      const card = document.getElementById('ai-card');
+      if(card) card.innerHTML = `<div class="ai-analysis-label">AI Analysis — ${ENG.config.name}</div><div class="ai-analysis-text">${ENG.aiText.replace(/\n/g,'<br>')}</div>`;
+    } else throw new Error();
+  } catch(e){
+    ENG.aiText = `Great choice working toward ${ENG.config.name}. The most important first step is making your savings automatic — set up a monthly transfer to a dedicated account the day after you get paid. In Canada, a TFSA is usually the best place to save for most goals because your growth is completely tax-free and you can withdraw anytime without penalty. Stay consistent, track your progress monthly, and remember that small, regular contributions always beat large, infrequent ones.`;
+    savePlan();
+    const card = document.getElementById('ai-card');
+    if(card) card.innerHTML = `<div class="ai-analysis-label">AI Analysis — ${ENG.config.name}</div><div class="ai-analysis-text">${ENG.aiText}</div>`;
+  }
+}
+
+function collectAnswers(){
+  ENG.config.questions.forEach(q=>{
+    const el = document.getElementById('eq-'+q.id);
+    if(el) ENG.answers[q.id] = el.value;
+  });
+}
+
+function savePlan(){
+  S.plans[ENG.planId] = {
+    answers:   ENG.answers,
+    result:    ENG.result,
+    aiText:    ENG.aiText,
+    checkboxes:ENG.checkboxes,
+    updatedAt: Date.now(),
+  };
+  save();
+}
+
+function engineNext(){
+  if(ENG.step === ENGINE_STEPS.length-1){ closeEngine(); return; }
+  if(ENG.step === 0){
+    collectAnswers();
+    const missing = ENG.config.questions.filter(q=>q.required && !ENG.answers[q.id]);
+    if(missing.length){ toast('Please fill in: '+missing.map(q=>q.label).join(', ')); return; }
+    ENG.result = ENG.config.calculate(ENG.answers);
+    savePlan();
+    // Create/update goal
+    let goal = S.goals.find(g=>g.planId===ENG.planId);
+    if(!goal){
+      goal = { name:ENG.config.name, target:ENG.result.total, saved:0, planId:ENG.planId, cat:ENG.config.name, id:Date.now(), why:'' };
+      S.goals.push(goal);
+    } else {
+      goal.target = ENG.result.total;
+    }
+    save(); renderGoals(); buildDashDreams();
+  }
+  ENG.step++;
+  renderEngineStep();
+  document.getElementById('engine-modal').scrollTop = 0;
+}
+
+function engineBack(){
+  if(ENG.step > 0){ ENG.step--; renderEngineStep(); }
+}
+
+/* ════════════════════════════════════════
+   PLANNERS GRID
+════════════════════════════════════════ */
+function buildPlannersGrid(){
+  const el = document.getElementById('planners-grid');
+  if(!el) return;
+  const colorMap = { vacation:'#1a6b8a',home:'#c0392b',vehicle:'#b07d2a',emg:'#2d6a4f',education:'#6c5b8e',baby:'#c0392b',business:'#1a6b8a',retire:'#6c5b8e' };
+  el.innerHTML = Object.values(PLANNERS).map(p=>{
+    const saved = S.plans[p.id];
+    const goal  = S.goals.find(g=>g.planId===p.id);
+    const pct   = goal&&goal.target>0 ? Math.min(100,Math.round(goal.saved/goal.target*100)) : 0;
+    return `
+      <div class="plan-card" style="--pc-color:${p.color}" onclick="openEngine('${p.id}')">
+        <div class="pc-emoji">${p.emoji}</div>
+        <div class="pc-name">${p.name}</div>
+        <div class="pc-desc">${p.description}</div>
+        ${saved
+          ? `<div class="pbw"><div class="pbh"><span style="color:var(--text3);font-size:11px">${pct}% funded</span><span style="color:var(--text3);font-size:11px">$${(goal?.saved||0).toLocaleString('en-CA')} of $${(goal?.target||0).toLocaleString('en-CA')}</span></div><div class="pbt"><div class="pbf" style="width:${pct}%;background:${p.color}"></div></div></div>`
+          : `<div class="pc-status">Tap to start planning →</div>`
+        }
+      </div>
+    `;
+  }).join('');
+  // Coming soon placeholder
+  const comingSoon = [
+    {emoji:'💍',name:'Wedding Planner',color:'#c0392b'},
+    {emoji:'🎓',name:'Education Planner',color:'#6c5b8e'},
+    {emoji:'👶',name:'Baby Planner',color:'#c0392b'},
+    {emoji:'💼',name:'Business Planner',color:'#1a6b8a'},
+    {emoji:'🏖',name:'Retirement Planner',color:'#6c5b8e'},
+    {emoji:'🏠',name:'Moving Planner',color:'#1a6b8a'},
+  ];
+  el.innerHTML += comingSoon.map(p=>`
+    <div class="plan-card" style="--pc-color:${p.color};opacity:.5;cursor:default">
+      <div class="pc-emoji">${p.emoji}</div>
+      <div class="pc-name">${p.name}</div>
+      <div class="pc-status" style="color:var(--text3)">Coming soon</div>
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════════════
+   DREAM BUILDER
+════════════════════════════════════════ */
+let selDreams = [];
+
+function initDreamBuilder(){
+  const overlay = document.getElementById('dream-overlay');
+  if(S.onboarded){ overlay.style.display='none'; document.getElementById('app').style.opacity='1'; initApp(); return; }
+  const grid = document.getElementById('db-grid');
+  DREAMS.forEach((d,i)=>{
+    const c = document.createElement('div');
+    c.className = 'dc';
+    c.style.animationDelay = (i*45)+'ms';
+    c.style.setProperty('--dc-color',d.color);
+    c.style.setProperty('--dc-glow',d.glow);
+    c.style.setProperty('--dc-accent',d.accent);
+    c.innerHTML = `<div class="dc-ck">✓</div><span class="dc-em">${d.emoji}</span><div class="dc-lbl">${d.label}</div>`;
+    c.onclick = ()=>toggleDream(d.id,c);
+    grid.appendChild(c);
+  });
+}
+
+function toggleDream(id,card){
+  const i = selDreams.indexOf(id);
+  if(i>-1){ selDreams.splice(i,1); card.classList.remove('sel'); }
+  else { selDreams.push(id); card.classList.add('sel'); }
+  const btn = document.getElementById('db-next-btn');
+  const ct  = document.getElementById('db-sel-ct');
+  if(selDreams.length===0){ btn.classList.remove('rdy'); ct.innerHTML='Select at least one dream to continue'; }
+  else { btn.classList.add('rdy'); ct.innerHTML=`<strong>${selDreams.length} dream${selDreams.length>1?'s':''} selected</strong> — let\'s build your plan`; }
+}
+
+function goNameStep(){
+  if(!selDreams.length) return;
+  document.getElementById('db-hdr1').style.display='none';
+  document.getElementById('db-grid').style.display='none';
+  document.getElementById('db-cta1').style.display='none';
+  document.getElementById('step-name').classList.add('active');
+  setTimeout(()=>document.getElementById('name-inp').focus(),100);
+}
+
+function onNameType(){
+  const v = document.getElementById('name-inp').value.trim();
+  document.getElementById('name-btn').classList.toggle('rdy',v.length>0);
+}
+
+function finishOnboard(){
+  const name = document.getElementById('name-inp').value.trim()||'You';
+  S.name = name; S.dreams = selDreams; S.onboarded = true; save();
+  const ov = document.getElementById('dream-overlay');
+  ov.classList.add('exit');
+  setTimeout(()=>{ ov.style.display='none'; document.getElementById('app').classList.add('visible'); initApp(); showAch('🌟','Welcome aboard!','Your personalised life plan is ready, '+name+'.'); },500);
+}
+
+function skipOnboard(){
+  S.onboarded=true; S.name=S.name||'You'; S.dreams=S.dreams.length?S.dreams:['vacation','emg']; save();
+  document.getElementById('dream-overlay').style.display='none';
+  document.getElementById('app').classList.add('visible'); initApp();
+}
+
+/* ════════════════════════════════════════
+   APP INIT
+════════════════════════════════════════ */
+function initApp(){
+  const name = S.name||'You';
+  const h = new Date().getHours();
+  document.getElementById('dash-greet').innerHTML = `${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, <em>${name}</em>`;
+  document.getElementById('sl-name').textContent = name+'\u2019s Plan';
+  document.getElementById('sl-tag').textContent  = 'Life Planning Platform';
+  const dtags = document.getElementById('sl-dtags');
+  S.dreams.slice(0,4).forEach(id=>{ const d=DREAMS.find(x=>x.id===id); if(d){ const t=document.createElement('div'); t.className='sl-dtag'; t.textContent=d.emoji+' '+d.label; dtags.appendChild(t); }});
+  // Coach intro
+  const dreamNames = S.dreams.map(id=>{ const d=DREAMS.find(x=>x.id===id); return d?d.emoji+' '+d.label:''; }).filter(Boolean);
+  if(dreamNames.length) document.getElementById('coach-intro').innerHTML = `Hi ${name}! I can see you're working toward: <strong>${dreamNames.join(', ')}</strong>. I'm your Canadian life planning coach — ask me anything about your goals, accounts, or finances.`;
+  // Check-in badge
+  const last = S.lastCheckin ? new Date(S.lastCheckin) : null;
+  if(!last || (Date.now()-last)/86400000 >= 7) document.getElementById('ci-badge').style.display='inline-block';
+  buildDashDreams();
+  buildQuickQs();
+  buildPlannersGrid();
+  buildActionSteps();
+  buildAchs();
+  renderEntries();
+  renderGoals();
+  renderDebts();
+  updateDash();
+  renderSteps();
+  document.getElementById('streak-big').textContent = S.streak;
+  setTimeout(animBars,220);
+}
+
+/* ════════════════════════════════════════
+   DASHBOARD DREAMS
+════════════════════════════════════════ */
+function buildDashDreams(){
+  const el = document.getElementById('dash-dreams');
+  if(!el) return;
+  if(!S.dreams.length){ el.innerHTML='<div style="color:var(--text3);font-size:13px;grid-column:1/-1;padding:16px 0">No dreams yet. Go to Life Planners to add some.</div>'; return; }
+  el.innerHTML = S.dreams.map(id=>{
+    const d = DREAMS.find(x=>x.id===id); if(!d) return '';
+    const plan = S.plans[id];
+    const goal = S.goals.find(g=>g.planId===id);
+    const pct  = goal&&goal.target>0 ? Math.min(100,Math.round(goal.saved/goal.target*100)) : 0;
+    return `<div class="dg-card" style="--dgc:${d.color}" onclick="openEngine('${id}')">
+      <div class="dg-em">${d.emoji}</div>
+      <div class="dg-nm">${d.label}</div>
+      <div class="dg-st">${goal?`$${goal.saved.toLocaleString('en-CA')} of $${goal.target.toLocaleString('en-CA')}`:plan?'Plan started':'Tap to start planning →'}</div>
+      ${goal?`<div class="pbt" style="height:4px"><div class="pbf" style="width:${pct}%;background:${d.color}"></div></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════
+   QUICK QUESTIONS (AI COACH)
+════════════════════════════════════════ */
+function buildQuickQs(){
+  const qs=[
+    ['🛡️','Emergency Fund','How much should a Canadian family keep in an emergency fund?'],
+    ['📊','RRSP vs TFSA','What is the difference between RRSP and TFSA for Canadian families?'],
+    ['🍁','Alberta ACFB','Tell me about the Alberta Child and Family Benefit and who qualifies'],
+    ['🎓','RESP','How does the RESP work and how much should we contribute per year?'],
+    ['💳','Debt Strategy','What is the best debt payoff strategy for a Canadian family?'],
+    ['🏠','FHSA','How does the First Home Savings Account work in Canada?'],
+  ];
+  const el = document.getElementById('quick-qs');
+  if(!el) return;
+  el.innerHTML=qs.map(([e,t,q])=>`<div class="card cp" style="cursor:pointer" onclick="askQ('${q.replace(/'/g,"\\'")}')"><div style="font-size:20px;margin-bottom:7px">${e}</div><div style="font-size:13px;font-weight:600;margin-bottom:2px">${t}</div><div style="font-size:12px;color:var(--text2)">${q}</div></div>`).join('');
+}
+
+/* ════════════════════════════════════════
+   ACTION STEPS
+════════════════════════════════════════ */
+const AP_STEPS=[
+  {id:1,title:'Set up your Family Budget',desc:'Go to Family Budget and enter income and expenses. Unlocks your Health Score.'},
+  {id:2,title:'Build a $1,000 starter emergency fund',desc:'Before tackling debt aggressively, have $1,000 in a TFSA HISA as a buffer.'},
+  {id:3,title:'List all your debts',desc:'Add every debt to Debt Payoff. Awareness is the first step to freedom.'},
+  {id:4,title:'Open or maximise your TFSA',desc:'The 2025 TFSA limit is $7,000. Tax-free growth, withdraw anytime.'},
+  {id:5,title:'Apply for CCB if you have children',desc:'Canada Child Benefit — up to $648/month per child under 6. Apply at CRA.ca.'},
+  {id:6,title:'Start one Life Planner',desc:'Go to Life Planners and open one planner. Answer the questions and get your personalised roadmap.'},
+  {id:7,title:'Complete a weekly check-in',desc:'Come back each week. Update your numbers, grow your streak, and let the AI refine your plan.'},
+];
+function buildActionSteps(){
+  const el=document.getElementById('ap-wrap'); if(!el) return;
+  el.innerHTML=AP_STEPS.map(s=>`<div class="ap-step"><div class="ap-num ${S.steps[s.id]?'done':''}" id="apn${s.id}">${S.steps[s.id]?'✓':s.id}</div><div class="ap-body"><h4>${s.title}</h4><p>${s.desc}</p></div><button class="ap-ck ${S.steps[s.id]?'done':''}" id="apc${s.id}" onclick="checkStep(${s.id})">${S.steps[s.id]?'✓':''}</button></div>`).join('');
+}
+function checkStep(n){ S.steps[n]=!S.steps[n]; save(); renderSteps(); if(S.steps[n]) showAch('✓','Step Complete',AP_STEPS[n-1].title); }
+function renderSteps(){
+  let done=0;
+  AP_STEPS.forEach(s=>{ const b=document.getElementById('apc'+s.id),n=document.getElementById('apn'+s.id); if(b){b.classList.toggle('done',!!S.steps[s.id]);b.textContent=S.steps[s.id]?'✓':'';} if(n){n.classList.toggle('done',!!S.steps[s.id]);n.textContent=S.steps[s.id]?'✓':s.id;} if(S.steps[s.id])done++; });
+  const bar=document.getElementById('ap-bar'); if(bar)bar.style.width=Math.round(done/7*100)+'%';
+  const cnt=document.getElementById('ap-cnt'); if(cnt)cnt.textContent=done+' / 7 done';
+}
+
+/* ════════════════════════════════════════
+   ACHIEVEMENTS
+════════════════════════════════════════ */
+const ACH_DEF=[
+  {id:'onboarded',icon:'🌟',title:'Dream Builder',desc:'Set your life goals and built your plan'},
+  {id:'first_entry',icon:'📝',title:'First Entry',desc:'You tracked your first transaction'},
+  {id:'first_goal',icon:'🎯',title:'Goal Setter',desc:'You created your first savings goal'},
+  {id:'first_debt',icon:'💪',title:'Face the Debt',desc:'You listed your first debt — brave step'},
+  {id:'first_plan',icon:'🗺',title:'Life Planner',desc:'You completed your first life plan'},
+  {id:'first_checkin',icon:'🔁',title:'Check-in Champ',desc:'Completed your first weekly check-in'},
+  {id:'streak3',icon:'🔥',title:'3-Week Streak',desc:'Three check-ins in a row'},
+];
+function unlockAch(id){ if(!S.achievements.includes(id)){ S.achievements.push(id); save(); const a=ACH_DEF.find(x=>x.id===id); if(a)showAch(a.icon,a.title,a.desc); buildAchs(); } }
+function buildAchs(){ const el=document.getElementById('ach-list'); if(!el)return; const earned=ACH_DEF.filter(a=>S.achievements.includes(a.id)); if(!earned.length){el.innerHTML='<div style="color:var(--text3);font-size:13px">Complete steps and check-ins to earn badges.</div>';return;} el.innerHTML=earned.map(a=>`<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)"><span style="font-size:20px">${a.icon}</span><div><div style="font-size:12px;font-weight:600;color:var(--text)">${a.title}</div><div style="font-size:11px;color:var(--text3)">${a.desc}</div></div></div>`).join(''); }
+let achT;
+function showAch(icon,title,sub){ clearTimeout(achT); document.getElementById('ach-icon').textContent=icon; document.getElementById('ach-title').textContent=title; document.getElementById('ach-sub').textContent=sub; document.getElementById('ach-pop').classList.add('show'); achT=setTimeout(()=>document.getElementById('ach-pop').classList.remove('show'),3500); }
+
+/* ════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════ */
+function go(id,el){
+  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(el)el.classList.add('active');
+  setTimeout(animBars,80);
+  if(id==='goals')renderGoals();
+  if(id==='debt')renderDebts();
+  if(id==='planners')buildPlannersGrid();
+  if(id==='action'){buildActionSteps();renderSteps();buildAchs();}
+  if(id==='emergency')calcEmg();
+  if(id==='dashboard'){buildDashDreams();updateAiInsight();}
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('ov').classList.remove('show');
+}
+function toggleMenu(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('ov').classList.toggle('show'); }
+function animBars(){ document.querySelectorAll('.pbf[data-w]').forEach(el=>el.style.width=el.dataset.w+'%'); }
+setTimeout(animBars,300);
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+/* ════════════════════════════════════════
+   QUICK ADD + ENTRIES
+════════════════════════════════════════ */
+const ICONS={income:'💰',housing:'🏠',groceries:'🛒',transport:'🚗',childcare:'👶',utilities:'💡',insurance:'🛡',debt:'💳',savings:'📊',other:'◎'};
+function quickAdd(){
+  const desc=document.getElementById('q-desc').value.trim();
+  const amt=parseFloat(document.getElementById('q-amt').value);
+  const type=document.getElementById('q-type').value;
+  if(!desc||!amt){toast('Fill in description and amount.');return;}
+  S.entries.unshift({desc,amt,type,date:new Date().toLocaleDateString('en-CA')});
+  save();renderEntries();updateDash();
+  document.getElementById('q-desc').value='';document.getElementById('q-amt').value='';
+  unlockAch('first_entry');toast('✓ Entry added');
+}
+function renderEntries(){
+  const el=document.getElementById('recent-list'); if(!el)return;
+  if(!S.entries.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;text-align:center;padding:14px 0">No entries yet. Use Quick Add above to start tracking.</div>';return;}
+  el.innerHTML=S.entries.slice(0,7).map(e=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)"><div style="width:30px;height:30px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">${ICONS[e.type]||'◎'}</div><div style="flex:1"><div style="font-size:13px;font-weight:500">${e.desc}</div><div style="font-size:11px;color:var(--text3)">${e.type}·${e.date}</div></div><div style="font-family:var(--mn);font-size:12px;color:${e.type==='income'?'var(--forest)':'var(--maple)'}">${e.type==='income'?'+':'-'}$${e.amt.toFixed(2)}</div></div>`).join('');
+}
+
+/* ════════════════════════════════════════
+   DASHBOARD + HEALTH SCORE
+════════════════════════════════════════ */
+function updateDash(){
+  const inc=S.entries.filter(e=>e.type==='income').reduce((s,e)=>s+e.amt,0);
+  const exp=S.entries.filter(e=>e.type!=='income'&&e.type!=='savings').reduce((s,e)=>s+e.amt,0);
+  const sav=S.entries.filter(e=>e.type==='savings').reduce((s,e)=>s+e.amt,0);
+  document.getElementById('d-inc').textContent='$'+inc.toLocaleString('en-CA');
+  document.getElementById('d-exp').textContent='$'+exp.toLocaleString('en-CA');
+  document.getElementById('d-sav').textContent='$'+sav.toLocaleString('en-CA');
+  document.getElementById('d-emg').textContent='$'+(S.emgCur||0).toLocaleString('en-CA');
+  if(inc>0){
+    document.getElementById('d-expp').textContent=Math.round(exp/inc*100)+'% of income';
+    document.getElementById('d-savp').textContent=Math.round(sav/inc*100)+'% savings rate';
+    if(S.emgMo) document.getElementById('d-emgp').textContent=(S.emgCur/S.emgMo).toFixed(1)+' months covered';
+    let sc=0;
+    const ep=exp/inc; if(ep<=.5)sc+=40;else if(ep<=.7)sc+=25;else if(ep<=.9)sc+=10;
+    const sp=sav/inc; if(sp>=.2)sc+=30;else if(sp>=.1)sc+=18;else if(sp>0)sc+=8;
+    const em=S.emgMo?S.emgCur/S.emgMo:0; if(em>=6)sc+=30;else if(em>=3)sc+=20;else if(em>=1)sc+=10;
+    document.getElementById('h-num').textContent=sc;
+    document.getElementById('h-ring').style.strokeDashoffset=226-(sc/100)*226;
+    document.getElementById('h-ring').style.stroke=sc>=70?'var(--forest)':sc>=40?'var(--gold)':'var(--maple)';
+    const ll=[[80,'Strong 💚','Your family finances are in great shape.'],[55,'Healthy 🌿','Solid foundation — keep building.'],[30,'Building 🌱','Good progress. Focus on emergency fund and savings rate.'],[0,'Starting Out 🌤','Follow the Action Plan step by step.']];
+    const l=ll.find(x=>sc>=x[0]);
+    document.getElementById('h-lbl').textContent=l[1];
+    document.getElementById('h-desc').textContent=l[2];
+  }
+  updateAiInsight();
+}
+function updateAiInsight(){
+  const inc=S.entries.filter(e=>e.type==='income').reduce((s,e)=>s+e.amt,0);
+  const exp=S.entries.filter(e=>e.type!=='income'&&e.type!=='savings').reduce((s,e)=>s+e.amt,0);
+  const sav=S.entries.filter(e=>e.type==='savings').reduce((s,e)=>s+e.amt,0);
+  const insights=[];
+  if(inc>0){
+    const sp=Math.round(sav/inc*100);
+    if(sp>=20)insights.push(`Your ${sp}% savings rate is excellent. Consider maximising your TFSA next.`);
+    else if(sp>0)insights.push(`You're saving ${sp}% of income. Reaching 20% will accelerate your goals significantly.`);
+    if(exp/inc>.8)insights.push(`Expenses are at ${Math.round(exp/inc*100)}% of income. Review subscriptions and dining for quick wins.`);
+  }
+  const dreamPlan = S.dreams.find(id=>!S.plans[id]);
+  if(dreamPlan){ const d=DREAMS.find(x=>x.id===dreamPlan); if(d)insights.push(`You have a dream but no plan yet for: ${d.emoji} ${d.label}. Open Life Planners to create your roadmap.`); }
+  const el=document.getElementById('ai-insight');
+  if(el)el.textContent=insights[0]||(S.name?`Welcome, ${S.name}. Your life planning platform is ready. Start with Family Budget to unlock your Health Score.`:'Add your budget to unlock personalised insights.');
+}
+
+/* ════════════════════════════════════════
+   BUDGET
+════════════════════════════════════════ */
+function calcBudget(){
+  const p1=parseFloat(document.getElementById('b-p1').value)||0,p2=parseFloat(document.getElementById('b-p2').value)||0,ccb=parseFloat(document.getElementById('b-ccb').value)||0,oth=parseFloat(document.getElementById('b-oth').value)||0;
+  const income=p1+p2+ccb+oth;
+  const cats=[['b-h','Housing'],['b-g','Groceries'],['b-t','Transport'],['b-c','Childcare'],['b-u','Utilities'],['b-i','Insurance'],['b-d','Debt'],['b-s','Subscriptions'],['b-f','Dining & Fun'],['b-m','Other']];
+  let totalExp=0; cats.forEach(([k])=>totalExp+=parseFloat(document.getElementById(k)?.value)||0);
+  const surplus=income-totalExp;
+  const clrs=['maple','sky','gold','lav','forest','maple','sky','gold','forest','lav'];
+  let rows=''; cats.forEach(([k,lbl],i)=>{ const v=parseFloat(document.getElementById(k)?.value)||0; if(!v)return; const p=income>0?Math.round(v/income*100):0; rows+=`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span style="font-weight:500">${lbl}</span><span style="color:var(--text2);font-family:var(--mn)">$${v.toLocaleString('en-CA')} <span style="color:var(--text3)">${p}%</span></span></div><div class="pbt"><div class="pbf ${clrs[i]}" style="width:${p}%"></div></div></div>`; });
+  const el=document.getElementById('budget-out');
+  if(!income&&!totalExp){el.innerHTML='<div style="color:var(--text3);font-size:13px">Fill in income and expenses above.</div>';return;}
+  el.innerHTML=`<div class="g3" style="margin-bottom:18px"><div style="text-align:center;padding:12px;background:var(--bg);border-radius:11px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px">Income</div><div style="font-family:var(--dp);font-size:22px;color:var(--forest)">$${income.toLocaleString('en-CA')}</div></div><div style="text-align:center;padding:12px;background:var(--bg);border-radius:11px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px">Expenses</div><div style="font-family:var(--dp);font-size:22px;color:var(--maple)">$${totalExp.toLocaleString('en-CA')}</div></div><div style="text-align:center;padding:12px;background:var(--bg);border-radius:11px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px">${surplus>=0?'Surplus':'Deficit'}</div><div style="font-family:var(--dp);font-size:22px;color:${surplus>=0?'var(--sky)':'var(--maple)'}">$${Math.abs(surplus).toLocaleString('en-CA')}</div></div></div>${rows}${surplus<0?`<div class="alert-box"><strong>Alert:</strong> Expenses exceed income by $${Math.abs(surplus).toLocaleString('en-CA')}/month.</div>`:''}${income>0&&(income-totalExp)/income>=.2?`<div class="tip"><div class="tip-lbl">🌿 Strong Savings Rate</div>You're saving ${Math.round((income-totalExp)/income*100)}% of income. Consider maximising your TFSA next.</div>`:''}`;
+  updateDash();
+}
+
+/* ════════════════════════════════════════
+   GOALS
+════════════════════════════════════════ */
+function addGoal(){
+  const n=document.getElementById('g-n').value.trim(),t=parseFloat(document.getElementById('g-t').value),s=parseFloat(document.getElementById('g-s').value)||0,c=document.getElementById('g-c').value,d=document.getElementById('g-d').value,w=document.getElementById('g-w').value;
+  if(!n||!t){toast('Name and target required.');return;}
+  S.goals.push({name:n,target:t,saved:s,cat:c,date:d,why:w,id:Date.now()});
+  save();renderGoals();['g-n','g-t','g-s','g-d','g-w'].forEach(id=>document.getElementById(id).value='');
+  unlockAch('first_goal');toast('✓ Goal created');
+}
+function renderGoals(){
+  const el=document.getElementById('goals-list'); if(!el)return;
+  if(!S.goals.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;text-align:center;padding:28px;grid-column:1/-1">Create your first goal above, or start a Life Planner to auto-generate one.</div>';return;}
+  const clrs=['forest','sky','maple','gold','lav'];
+  el.innerHTML=S.goals.map((g,i)=>{
+    const pct=Math.min(100,g.target>0?Math.round(g.saved/g.target*100):0);
+    const rem=Math.max(0,g.target-g.saved);
+    let mLeft=''; if(g.date){const n=new Date(),t=new Date(g.date+'-01');const m=(t.getFullYear()-n.getFullYear())*12+(t.getMonth()-n.getMonth());mLeft=m>0?m+' months left':'Due this month';}
+    return `<div class="card" style="padding:18px"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:11px"><div><div style="font-size:13px;font-weight:600">${g.name}</div><div style="font-size:11px;color:var(--text3)">${g.cat}${mLeft?' · '+mLeft:''}</div></div><div style="text-align:right;font-family:var(--mn);font-size:11px;color:var(--text2)"><strong style="display:block;font-size:17px;color:var(--text);font-weight:400">$${g.saved.toLocaleString('en-CA')}</strong>of $${g.target.toLocaleString('en-CA')}</div></div><div class="pbt" style="height:5px"><div class="pbf ${clrs[i%5]}" style="width:${pct}%"></div></div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:5px"><span>${pct}%</span><span>$${rem.toLocaleString('en-CA')} to go</span></div>${g.why?`<div style="font-size:11px;color:var(--text3);margin-top:8px;font-style:italic">"${g.why}"</div>`:''}<div style="display:flex;gap:7px;margin-top:11px"><button class="btn btn-ghost" style="font-size:12px;padding:5px 11px" onclick="addToGoal(${i})">+ Add</button><button class="btn btn-ghost" style="font-size:12px;padding:5px 11px;color:var(--maple)" onclick="rmGoal(${i})">Remove</button></div></div>`;
+  }).join('');
+}
+function addToGoal(i){const a=parseFloat(prompt('Amount to add ($CAD):'));if(!isNaN(a)&&a>0){S.goals[i].saved=Math.min(S.goals[i].target,S.goals[i].saved+a);save();renderGoals();buildDashDreams();if(S.goals[i].saved>=S.goals[i].target)showAch('🎉','Goal Reached!',S.goals[i].name);else toast('Added $'+a);}}
+function rmGoal(i){S.goals.splice(i,1);save();renderGoals();}
+
+/* ════════════════════════════════════════
+   DEBT
+════════════════════════════════════════ */
+function setDM(m){S.dm=m;save();document.getElementById('btn-av').className=m==='avalanche'?'btn btn-maple':'btn btn-ghost';document.getElementById('btn-sw').className=m==='snowball'?'btn btn-maple':'btn btn-ghost';renderDebts();}
+function addDebt(){
+  const n=document.getElementById('d-n').value.trim(),b=parseFloat(document.getElementById('d-b').value),r=parseFloat(document.getElementById('d-r').value),p=parseFloat(document.getElementById('d-p').value);
+  if(!n||!b||!r||!p){toast('Fill all debt fields.');return;}
+  S.debts.push({n,b,r,p,id:Date.now()});save();renderDebts();['d-n','d-b','d-r','d-p'].forEach(id=>document.getElementById(id).value='');
+  unlockAch('first_debt');toast('Debt added. Awareness is step one.');
+}
+function renderDebts(){
+  const sorted=[...S.debts].sort((a,b)=>S.dm==='avalanche'?b.r-a.r:a.b-b.b);
+  const el=document.getElementById('debt-list'); if(!el)return;
+  if(!sorted.length){el.innerHTML='<div style="color:var(--text3);font-size:13px;text-align:center;padding:28px;grid-column:1/-1">Add your debts above.</div>';return;}
+  el.innerHTML=sorted.map((d,i)=>{
+    const mi=d.b*(d.r/100/12),months=d.p>mi?Math.ceil(Math.log(d.p/(d.p-mi))/Math.log(1+d.r/100/12)):999;
+    const dfd=new Date();dfd.setMonth(dfd.getMonth()+(months<999?months:0));
+    const ti=months<999?'$'+(d.p*months-d.b).toFixed(0):'—';
+    return `<div class="card" style="padding:18px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px;flex-wrap:wrap;gap:6px"><div>${i===0?`<div class="bdg bdg-maple" style="margin-bottom:6px">▲ Pay First</div><br/>`:''}  <div style="font-size:13px;font-weight:600">${d.n}</div><div style="font-size:11px;color:var(--text2)">${d.r}% APR · $${d.p}/mo</div></div><button onclick="rmDebt('${d.id}')" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:17px">×</button></div><div class="pbt" style="height:5px"><div class="pbf maple" style="width:100%"></div></div><div style="display:flex;gap:14px;margin-top:11px;flex-wrap:wrap"><div style="font-size:11px;color:var(--text2)">Balance<span style="display:block;font-family:var(--mn);font-size:14px;color:var(--text);margin-top:1px">$${d.b.toLocaleString('en-CA')}</span></div><div style="font-size:11px;color:var(--text2)">Months Left<span style="display:block;font-family:var(--mn);font-size:14px;color:var(--text);margin-top:1px">${months<999?months:'∞'}</span></div><div style="font-size:11px;color:var(--text2)">Total Interest<span style="display:block;font-family:var(--mn);font-size:14px;color:var(--text);margin-top:1px">${ti}</span></div></div>${months<999?`<div class="bdg bdg-forest" style="margin-top:10px">Free by ${dfd.toLocaleDateString('en-CA',{month:'long',year:'numeric'})}</div>`:''}</div>`;
+  }).join('');
+  const tot=S.debts.reduce((s,d)=>s+d.b,0),totP=S.debts.reduce((s,d)=>s+d.p,0);
+  document.getElementById('debt-sum').innerHTML=S.debts.length?`<div class="g3" style="margin-top:11px"><div style="text-align:center;padding:11px;background:var(--bg);border-radius:10px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px">Total Debt</div><div style="font-family:var(--dp);font-size:22px;color:var(--maple)">$${tot.toLocaleString('en-CA')}</div></div><div style="text-align:center;padding:11px;background:var(--bg);border-radius:10px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px">Monthly Payments</div><div style="font-family:var(--dp);font-size:22px">$${totP.toLocaleString('en-CA')}</div></div><div style="text-align:center;padding:11px;background:var(--bg);border-radius:10px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:3px">Strategy</div><div style="font-family:var(--dp);font-size:22px;text-transform:capitalize">${S.dm}</div></div></div>`:'';
+}
+function rmDebt(id){S.debts=S.debts.filter(d=>d.id!=id);save();renderDebts();}
+
+/* ════════════════════════════════════════
+   EMERGENCY FUND
+════════════════════════════════════════ */
+function calcEmg(){
+  const cur=parseFloat(document.getElementById('e-c').value)||0,mo=parseFloat(document.getElementById('e-m').value)||0,tgtM=parseInt(document.getElementById('e-t').value)||6;
+  const tgtAmt=mo*tgtM,pct=tgtAmt>0?Math.min(100,Math.round(cur/tgtAmt*100)):0,months=mo>0?(cur/mo).toFixed(1):0;
+  S.emgCur=cur;S.emgMo=mo;save();
+  document.getElementById('e-bar').style.height=pct+'%';
+  document.getElementById('e-mv').textContent=months;
+  const rem=Math.max(0,tgtAmt-cur);
+  document.getElementById('emg-out').innerHTML=`<div class="pbw"><div class="pbh"><span>$${cur.toLocaleString('en-CA')} saved</span><span>${pct}% of goal</span></div><div class="pbt" style="height:7px"><div class="pbf ${pct>=100?'forest':pct>=50?'gold':'maple'}" style="width:${pct}%"></div></div></div><div style="margin-top:10px;font-size:12px;color:var(--text2)">Target: <strong style="color:var(--text)">$${tgtAmt.toLocaleString('en-CA')}</strong> · Still needed: <strong style="color:${rem>0?'var(--maple)':'var(--forest)'}">$${rem.toLocaleString('en-CA')}</strong></div>${pct>=100?'<div class="tip" style="margin-top:10px"><div class="tip-lbl">✓ Goal Reached</div>Your family is protected. Move extra savings to your TFSA or RRSP.</div>':''}`;
+  updateDash();
+}
+
+/* ════════════════════════════════════════
+   WEEKLY CHECK-IN
+════════════════════════════════════════ */
+let selMood='';
+function selMood(btn,mood){ document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); selMood=mood; }
+function completeCheckin(){
+  S.checkins=(S.checkins||0)+1;S.lastCheckin=new Date().toISOString();
+  const last=S.prevCheckin?new Date(S.prevCheckin):null;
+  const days=last?Math.floor((Date.now()-last)/86400000):999;
+  S.streak=days<=14?(S.streak||0)+1:1;S.prevCheckin=S.lastCheckin;save();
+  document.getElementById('ci-badge').style.display='none';
+  document.getElementById('ci-form').style.display='none';
+  document.getElementById('ci-done').style.display='block';
+  document.getElementById('streak-num').textContent=S.streak;
+  document.getElementById('streak-big').textContent=S.streak;
+  unlockAch('first_checkin');if(S.streak>=3)unlockAch('streak3');
+  showAch('🔁','Check-in Complete','See you next week!');
+}
+
+/* ════════════════════════════════════════
+   AI COACH
+════════════════════════════════════════ */
+const TIPS={rrsp:"RRSP contributions reduce your taxable income. Your 2025 limit is 18% of 2024 earned income, up to $32,490. Best for those in higher tax brackets now who expect lower income in retirement.",tfsa:"The 2025 TFSA limit is $7,000. All growth and withdrawals are completely tax-free. Unused room carries forward. Check your room at CRA My Account.",ccb:"The Canada Child Benefit provides up to $7,787/year per child under 6 and $6,570 for ages 6–17. Tax-free. Apply through CRA My Account.",resp:"The RESP gets a 20% CESG grant on the first $2,500/year per child — $500 free money annually. Lifetime max $7,200 per child.",emergency:"Aim for 3–6 months of expenses in a TFSA HISA. Alberta families should target 6 months given energy-sector volatility.",debt:"Avalanche (highest rate first) saves the most money. Snowball (smallest balance) builds momentum. Both work — pick one and stay consistent.",fhsa:"FHSA: up to $8,000/year tax-deductible, $40,000 lifetime. Tax-free withdrawals for first home. Best of RRSP + TFSA combined.",alberta:"Alberta families may get the ACFB automatically when filing taxes. File every year — benefits depend on your tax return.",};
+async function sendChat(){
+  const inp=document.getElementById('chat-inp'); const msg=inp.value.trim(); if(!msg)return;
+  inp.value=''; addMsg(msg,'user');
+  document.getElementById('typing').classList.add('show');
+  const wrap=document.getElementById('chat-wrap'); wrap.scrollTop=wrap.scrollHeight;
+  const lower=msg.toLowerCase();
+  let offline='';
+  if(lower.includes('rrsp'))offline=TIPS.rrsp;else if(lower.includes('tfsa'))offline=TIPS.tfsa;else if(lower.includes('ccb')||lower.includes('child benefit'))offline=TIPS.ccb;else if(lower.includes('resp'))offline=TIPS.resp;else if(lower.includes('emergency'))offline=TIPS.emergency;else if(lower.includes('debt'))offline=TIPS.debt;else if(lower.includes('fhsa')||lower.includes('first home'))offline=TIPS.fhsa;else if(lower.includes('alberta'))offline=TIPS.alberta;
+  const dreamCtx=S.dreams.map(id=>{const d=DREAMS.find(x=>x.id===id);return d?d.label:'';}).filter(Boolean).join(', ');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,system:`You are a warm, knowledgeable Canadian family finance and life planning coach inside the Broke to Bag app. User's name: ${S.name||'the user'}. Their life goals: ${dreamCtx||'not set yet'}. Specialise in Canadian finance: RRSPs, TFSAs, RESPs, FHSAs, CCB, Alberta ACFB. Be calm, supportive, practical. 3 paragraphs max. No markdown. Plain text only.`,messages:[{role:'user',content:msg}]})});
+    const data=await res.json();
+    document.getElementById('typing').classList.remove('show');
+    if(data.content?.[0]?.text)addMsg(data.content[0].text,'ai');else throw new Error();
+  }catch(e){
+    document.getElementById('typing').classList.remove('show');
+    addMsg(offline||`Great question, ${S.name||''}! For Canadian families, the priority is: 1) $1,000 emergency fund, 2) employer RRSP match, 3) high-interest debt, 4) 3-6 month emergency fund in TFSA HISA, 5) maximize TFSA. Free help at nomoredebts.org.`,'ai');
+  }
+  wrap.scrollTop=wrap.scrollHeight;
+}
+function addMsg(text,role){const wrap=document.getElementById('chat-wrap');const d=document.createElement('div');d.className='cmsg '+role;d.innerHTML=`<div class="cav ${role==='ai'?'ai':'usr'}">${role==='ai'?'🍁':'👤'}</div><div class="cbub">${text.replace(/\n/g,'<br>')}</div>`;wrap.appendChild(d);}
+function askQ(q){go('coach',document.querySelector('[onclick*="coach"]'));setTimeout(()=>{document.getElementById('chat-inp').value=q;sendChat();},200);}
+
+/* ════════════════════════════════════════
+   BOOTSTRAP
+════════════════════════════════════════ */
+if(S.onboarded){
+  document.getElementById('dream-overlay').style.display='none';
+  document.getElementById('app').style.opacity='1';
+  initApp();
+} else {
+  initDreamBuilder();
+  document.getElementById('name-btn').classList.remove('rdy');
+}
+</script>
+</body>
+</html>
